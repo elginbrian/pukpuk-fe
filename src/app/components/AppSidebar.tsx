@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
+} from "../components/ui/sidebar";
 
 const navigationItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
