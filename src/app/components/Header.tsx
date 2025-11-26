@@ -12,7 +12,7 @@ import {
 import { Button } from "./ui/button";
 
 export function Header() {
-  const { setTheme, theme } = useTheme();
+  const { setTheme, theme, resolvedTheme } = useTheme();
 
   return (
     <header className="h-16 border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
@@ -32,8 +32,8 @@ export function Header() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                {theme === "dark" ? (
+              <Button variant="ghost" size="icon" suppressHydrationWarning>
+                {resolvedTheme === "dark" ? (
                   <Moon className="h-4 w-4" />
                 ) : (
                   <Sun className="h-4 w-4" />

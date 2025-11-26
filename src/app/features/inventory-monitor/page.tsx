@@ -96,7 +96,7 @@ export default function Inventory() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="glass-panel">
+        <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Locations</CardTitle>
           </CardHeader>
@@ -106,7 +106,7 @@ export default function Inventory() {
           </CardContent>
         </Card>
 
-        <Card className="glass-panel">
+        <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">Active Alerts</CardTitle>
           </CardHeader>
@@ -116,7 +116,7 @@ export default function Inventory() {
           </CardContent>
         </Card>
 
-        <Card className="glass-panel">
+        <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">Dead-Stock Risks</CardTitle>
           </CardHeader>
@@ -126,7 +126,7 @@ export default function Inventory() {
           </CardContent>
         </Card>
 
-        <Card className="glass-panel">
+        <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">Utilization</CardTitle>
           </CardHeader>
@@ -138,7 +138,7 @@ export default function Inventory() {
       </div>
 
       {/* Alerts Panel */}
-      <Card className="glass-panel border-l-4 border-l-warning">
+      <Card className="border-l-10 border-l-warning">
         <CardHeader>
           <div className="flex items-center gap-2">
             <AlertCircle className="h-5 w-5 text-warning" />
@@ -148,7 +148,7 @@ export default function Inventory() {
         </CardHeader>
         <CardContent className="space-y-3">
           {alerts.map((alert, index) => (
-            <div key={index} className="flex items-start justify-between p-4 rounded-lg border border-border bg-card/50 hover-glow">
+            <div key={index} className="flex items-start justify-between p-4 rounded-lg border border-border bg-background hover-glow">
               <div className="space-y-1 flex-1">
                 <div className="flex items-center gap-2">
                   <StatusBadge
@@ -171,7 +171,7 @@ export default function Inventory() {
       </Card>
 
       {/* Inventory Table */}
-      <Card className="glass-panel">
+      <Card>
         <CardHeader>
           <CardTitle>Inventory Overview</CardTitle>
           <CardDescription>Stock levels across all locations</CardDescription>
@@ -189,11 +189,11 @@ export default function Inventory() {
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
+            <TableBody className="bg-background">
               {inventoryData.map((item, index) => {
                 const percentage = getStockPercentage(item.stock, item.capacity);
                 return (
-                  <TableRow key={index}>
+                  <TableRow key={index} >
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
                         {item.type === "plant" && <Package className="h-4 w-4 text-primary" />}
@@ -251,7 +251,7 @@ export default function Inventory() {
               
               <div className="p-6 space-y-6 overflow-y-auto">
                 {/* Alert Status */}
-                <Card className="glass-panel">
+                <Card className="">
                   <CardHeader>
                     <CardTitle className="text-lg">Alert Status</CardTitle>
                   </CardHeader>
@@ -279,7 +279,7 @@ export default function Inventory() {
                 </Card>
 
                 {/* Location Details */}
-                <Card className="glass-panel">
+                <Card className="">
                   <CardHeader>
                     <CardTitle className="text-lg">Location Information</CardTitle>
                   </CardHeader>
@@ -302,7 +302,7 @@ export default function Inventory() {
                 </Card>
 
                 {/* Impact Analysis */}
-                <Card className="glass-panel">
+                <Card className="">
                   <CardHeader>
                     <CardTitle className="text-lg">Impact Analysis</CardTitle>
                   </CardHeader>
@@ -330,7 +330,7 @@ export default function Inventory() {
                 </Card>
 
                 {/* Suggested Actions */}
-                <Card className="glass-panel border-l-4 border-l-primary">
+                <Card className="border-l-4 border-l-primary">
                   <CardHeader>
                     <CardTitle className="text-lg">Suggested Actions</CardTitle>
                   </CardHeader>
