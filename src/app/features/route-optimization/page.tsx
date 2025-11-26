@@ -1,25 +1,14 @@
-'use client'
+"use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
-import { Label } from "../../components/ui/label";
-import { Input } from "../../components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
-import { Badge } from "../../components/ui/badge";
-import { 
-  Navigation, 
-  Fuel, 
-  DollarSign, 
-  Leaf, 
-  MapPin, 
-  Truck, 
-  Send,
-  Clock,
-  TrendingDown,
-  Zap
-} from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
+import { Button } from "../../../components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
+import { Label } from "../../../components/ui/label";
+import { Input } from "../../../components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs";
+import { Badge } from "../../../components/ui/badge";
+import { Navigation, Fuel, DollarSign, Leaf, MapPin, Truck, Send, Clock, TrendingDown, Zap } from "lucide-react";
 
 // Mock route data
 const routeOptions = {
@@ -29,7 +18,7 @@ const routeOptions = {
     fuelCost: 180000,
     tollCost: 45000,
     co2: 85,
-    path: "Plant A → Warehouse B → Kios Bandung → Kios Garut"
+    path: "Plant A → Warehouse B → Kios Bandung → Kios Garut",
   },
   cheapest: {
     distance: 280,
@@ -37,7 +26,7 @@ const routeOptions = {
     fuelCost: 155000,
     tollCost: 25000,
     co2: 92,
-    path: "Plant A → Warehouse A → Kios Tasikmalaya → Kios Garut"
+    path: "Plant A → Warehouse A → Kios Tasikmalaya → Kios Garut",
   },
   greenest: {
     distance: 260,
@@ -45,8 +34,8 @@ const routeOptions = {
     fuelCost: 165000,
     tollCost: 35000,
     co2: 78,
-    path: "Plant A → Warehouse B → Kios Sumedang → Kios Garut"
-  }
+    path: "Plant A → Warehouse B → Kios Sumedang → Kios Garut",
+  },
 };
 
 const Routing = () => {
@@ -104,11 +93,15 @@ const Routing = () => {
                 <div className="space-y-2 p-3 rounded-lg bg-muted/20">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">1. Warehouse B</span>
-                    <Badge variant="outline" className="text-xs">Required</Badge>
+                    <Badge variant="outline" className="text-xs">
+                      Required
+                    </Badge>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">2. Kios Bandung</span>
-                    <Badge variant="outline" className="text-xs">Optional</Badge>
+                    <Badge variant="outline" className="text-xs">
+                      Optional
+                    </Badge>
                   </div>
                 </div>
               </div>
@@ -158,13 +151,7 @@ const Routing = () => {
 
               <div className="space-y-2">
                 <Label>Load Capacity (tons)</Label>
-                <Input 
-                  type="number" 
-                  value={loadCapacity}
-                  onChange={(e) => setLoadCapacity(e.target.value)}
-                  min="1"
-                  max="15"
-                />
+                <Input type="number" value={loadCapacity} onChange={(e) => setLoadCapacity(e.target.value)} min="1" max="15" />
               </div>
 
               <div className="p-3 rounded-lg bg-muted/20 space-y-2">
@@ -190,27 +177,15 @@ const Routing = () => {
               <CardTitle className="text-lg">Route Optimization Goal</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Button 
-                variant={selectedRoute === "fastest" ? "default" : "outline"}
-                className="w-full justify-start gap-2"
-                onClick={() => setSelectedRoute("fastest")}
-              >
+              <Button variant={selectedRoute === "fastest" ? "default" : "outline"} className="w-full justify-start gap-2" onClick={() => setSelectedRoute("fastest")}>
                 <Zap className="h-4 w-4" />
                 Fastest Route
               </Button>
-              <Button 
-                variant={selectedRoute === "cheapest" ? "default" : "outline"}
-                className="w-full justify-start gap-2"
-                onClick={() => setSelectedRoute("cheapest")}
-              >
+              <Button variant={selectedRoute === "cheapest" ? "default" : "outline"} className="w-full justify-start gap-2" onClick={() => setSelectedRoute("cheapest")}>
                 <DollarSign className="h-4 w-4" />
                 Cheapest Route
               </Button>
-              <Button 
-                variant={selectedRoute === "greenest" ? "default" : "outline"}
-                className="w-full justify-start gap-2"
-                onClick={() => setSelectedRoute("greenest")}
-              >
+              <Button variant={selectedRoute === "greenest" ? "default" : "outline"} className="w-full justify-start gap-2" onClick={() => setSelectedRoute("greenest")}>
                 <Leaf className="h-4 w-4" />
                 Lowest Emission
               </Button>
@@ -233,12 +208,12 @@ const Routing = () => {
               <div className="relative w-full h-[400px] rounded-lg overflow-hidden bg-gradient-to-br from-navy-deep to-muted/20">
                 {/* Simulated Map Background */}
                 <div className="absolute inset-0 opacity-10">
-                  <div className="absolute top-0 left-0 right-0 h-px bg-border animate-pulse" style={{ top: '25%' }} />
-                  <div className="absolute top-0 left-0 right-0 h-px bg-border animate-pulse" style={{ top: '50%' }} />
-                  <div className="absolute top-0 left-0 right-0 h-px bg-border animate-pulse" style={{ top: '75%' }} />
-                  <div className="absolute top-0 bottom-0 left-0 w-px bg-border animate-pulse" style={{ left: '25%' }} />
-                  <div className="absolute top-0 bottom-0 left-0 w-px bg-border animate-pulse" style={{ left: '50%' }} />
-                  <div className="absolute top-0 bottom-0 left-0 w-px bg-border animate-pulse" style={{ left: '75%' }} />
+                  <div className="absolute top-0 left-0 right-0 h-px bg-border animate-pulse" style={{ top: "25%" }} />
+                  <div className="absolute top-0 left-0 right-0 h-px bg-border animate-pulse" style={{ top: "50%" }} />
+                  <div className="absolute top-0 left-0 right-0 h-px bg-border animate-pulse" style={{ top: "75%" }} />
+                  <div className="absolute top-0 bottom-0 left-0 w-px bg-border animate-pulse" style={{ left: "25%" }} />
+                  <div className="absolute top-0 bottom-0 left-0 w-px bg-border animate-pulse" style={{ left: "50%" }} />
+                  <div className="absolute top-0 bottom-0 left-0 w-px bg-border animate-pulse" style={{ left: "75%" }} />
                 </div>
 
                 {/* Route Points */}
@@ -249,12 +224,16 @@ const Routing = () => {
 
                 <div className="absolute top-[40%] left-[40%] flex flex-col items-center gap-1 z-10">
                   <div className="w-3 h-3 rounded-full bg-info shadow-lg" />
-                  <Badge variant="outline" className="text-xs bg-background/90 backdrop-blur">Warehouse B</Badge>
+                  <Badge variant="outline" className="text-xs bg-background/90 backdrop-blur">
+                    Warehouse B
+                  </Badge>
                 </div>
 
                 <div className="absolute top-[60%] left-[65%] flex flex-col items-center gap-1 z-10">
                   <div className="w-3 h-3 rounded-full bg-info shadow-lg" />
-                  <Badge variant="outline" className="text-xs bg-background/90 backdrop-blur">Kios Bandung</Badge>
+                  <Badge variant="outline" className="text-xs bg-background/90 backdrop-blur">
+                    Kios Bandung
+                  </Badge>
                 </div>
 
                 <div className="absolute top-[75%] left-[85%] flex flex-col items-center gap-1 z-10">
@@ -270,14 +249,7 @@ const Routing = () => {
                       <stop offset="100%" stopColor="hsl(var(--success))" stopOpacity="0.8" />
                     </linearGradient>
                   </defs>
-                  <path
-                    d="M 15% 20% Q 30% 30%, 40% 40% T 65% 60% T 85% 75%"
-                    stroke="url(#routeGradient)"
-                    strokeWidth="3"
-                    fill="none"
-                    strokeDasharray="8 4"
-                    className="animate-pulse"
-                  />
+                  <path d="M 15% 20% Q 30% 30%, 40% 40% T 65% 60% T 85% 75%" stroke="url(#routeGradient)" strokeWidth="3" fill="none" strokeDasharray="8 4" className="animate-pulse" />
                 </svg>
 
                 {/* Floating Info Card */}
@@ -292,18 +264,12 @@ const Routing = () => {
           {/* Route Comparison Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {Object.entries(routeOptions).map(([key, route]) => (
-              <Card 
-                key={key}
-                className={`cursor-pointer transition-all hover-glow ${
-                  selectedRoute === key ? 'border-primary ring-2 ring-primary/20' : 'border-border/50'
-                }`}
-                onClick={() => setSelectedRoute(key as typeof selectedRoute)}
-              >
+              <Card key={key} className={`cursor-pointer transition-all hover-glow ${selectedRoute === key ? "border-primary ring-2 ring-primary/20" : "border-border/50"}`} onClick={() => setSelectedRoute(key as typeof selectedRoute)}>
                 <CardHeader className="pb-3">
                   <CardTitle className="text-sm flex items-center gap-2">
-                    {key === 'fastest' && <Zap className="h-4 w-4 text-info" />}
-                    {key === 'cheapest' && <TrendingDown className="h-4 w-4 text-success" />}
-                    {key === 'greenest' && <Leaf className="h-4 w-4 text-success" />}
+                    {key === "fastest" && <Zap className="h-4 w-4 text-info" />}
+                    {key === "cheapest" && <TrendingDown className="h-4 w-4 text-success" />}
+                    {key === "greenest" && <Leaf className="h-4 w-4 text-success" />}
                     {key.charAt(0).toUpperCase() + key.slice(1)}
                   </CardTitle>
                 </CardHeader>
@@ -344,9 +310,7 @@ const Routing = () => {
                     <span className="font-medium">{route.co2} kg</span>
                   </div>
                   <div className="pt-2 mt-2 border-t border-border/50">
-                    <div className="text-xs font-semibold text-foreground">
-                      Total Cost: Rp {(route.fuelCost + route.tollCost).toLocaleString()}
-                    </div>
+                    <div className="text-xs font-semibold text-foreground">Total Cost: Rp {(route.fuelCost + route.tollCost).toLocaleString()}</div>
                   </div>
                 </CardContent>
               </Card>
@@ -383,9 +347,7 @@ const Routing = () => {
                     </div>
                     <div className="flex justify-between items-center p-4 rounded-lg bg-primary/10 border border-primary/20">
                       <span className="text-sm font-semibold text-foreground">Total Estimated Cost</span>
-                      <span className="text-lg font-bold text-primary">
-                        Rp {(currentRoute.fuelCost + currentRoute.tollCost + 120000).toLocaleString()}
-                      </span>
+                      <span className="text-lg font-bold text-primary">Rp {(currentRoute.fuelCost + currentRoute.tollCost + 120000).toLocaleString()}</span>
                     </div>
                   </div>
                 </TabsContent>
@@ -424,11 +386,7 @@ const Routing = () => {
                     <div className="p-4 rounded-lg bg-success/10 border border-success/20">
                       <p className="text-sm text-success">
                         <Leaf className="h-4 w-4 inline mr-1" />
-                        {currentRoute.co2 < 80 
-                          ? 'This route has the lowest environmental impact' 
-                          : currentRoute.co2 < 90 
-                          ? 'Moderate environmental impact'
-                          : 'Consider the greenest route for lower emissions'}
+                        {currentRoute.co2 < 80 ? "This route has the lowest environmental impact" : currentRoute.co2 < 90 ? "Moderate environmental impact" : "Consider the greenest route for lower emissions"}
                       </p>
                     </div>
                   </div>

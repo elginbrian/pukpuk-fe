@@ -1,9 +1,9 @@
 "use client";
 
-import { MetricCards } from "../../components/MetricCards";
-import { ForecastChart } from "../../components/ForecastChart";
-import { ModelConfiguration } from "../../components/ModelConfiguration";
-import { ScenarioSimulation } from "../../components/ScenarioSimulation";
+import { MetricCards } from "../../../components/MetricCards";
+import { ForecastChart } from "../../../components/ForecastChart";
+import { ModelConfiguration } from "../../../components/ModelConfiguration";
+import { ScenarioSimulation } from "../../../components/ScenarioSimulation";
 
 export default function DemandForecasting() {
   return (

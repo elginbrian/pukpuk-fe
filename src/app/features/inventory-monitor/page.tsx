@@ -1,14 +1,14 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
-import { StatusBadge } from "../../components/StatusBadge";
-import { Button } from "../../components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/table";
+import { StatusBadge } from "../../../components/StatusBadge";
+import { Button } from "../../../components/ui/button";
 import { AlertCircle, ArrowRight, Package, TrendingDown, Warehouse, X, Calendar, TrendingUp, MapPin, Truck } from "lucide-react";
-import { Progress } from "../../components/ui/progress";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerClose } from "../../components/ui/drawer";
+import { Progress } from "../../../components/ui/progress";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerClose } from "../../../components/ui/drawer";
 import { useState } from "react";
-import { Separator } from "../../components/ui/separator";
+import { Separator } from "../../../components/ui/separator";
 
 export default function Inventory() {
   const [selectedAlert, setSelectedAlert] = useState<number | null>(null);
@@ -89,9 +89,7 @@ export default function Inventory() {
     <div className="space-y-6 p-6 animate-fade-in">
       <div>
         <h1 className="text-3xl font-bold mb-2">Inventory Monitoring</h1>
-        <p className="text-muted-foreground">
-          Real-time stock levels and dead-stock detection across the supply chain
-        </p>
+        <p className="text-muted-foreground">Real-time stock levels and dead-stock detection across the supply chain</p>
       </div>
 
       {/* Summary Cards */}
@@ -151,10 +149,7 @@ export default function Inventory() {
             <div key={index} className="flex items-start justify-between p-4 rounded-lg border border-border bg-background hover-glow">
               <div className="space-y-1 flex-1">
                 <div className="flex items-center gap-2">
-                  <StatusBadge
-                    status={alert.type === "dead-stock" ? "dead-stock" : alert.type === "stockout" ? "danger" : "warning"}
-                    showPulse
-                  >
+                  <StatusBadge status={alert.type === "dead-stock" ? "dead-stock" : alert.type === "stockout" ? "danger" : "warning"} showPulse>
                     {alert.type === "dead-stock" ? "Dead Stock" : alert.type === "stockout" ? "Stockout Risk" : "Low Activity"}
                   </StatusBadge>
                   <span className="font-medium">{alert.location}</span>
@@ -193,7 +188,7 @@ export default function Inventory() {
               {inventoryData.map((item, index) => {
                 const percentage = getStockPercentage(item.stock, item.capacity);
                 return (
-                  <TableRow key={index} >
+                  <TableRow key={index}>
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
                         {item.type === "plant" && <Package className="h-4 w-4 text-primary" />}
@@ -220,7 +215,9 @@ export default function Inventory() {
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">{item.lastMovement}</TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="sm" onClick={() => setSelectedInventory(index)}>View Details</Button>
+                      <Button variant="ghost" size="sm" onClick={() => setSelectedInventory(index)}>
+                        View Details
+                      </Button>
                     </TableCell>
                   </TableRow>
                 );
@@ -248,7 +245,7 @@ export default function Inventory() {
                   </DrawerClose>
                 </div>
               </DrawerHeader>
-              
+
               <div className="p-6 space-y-6 overflow-y-auto">
                 {/* Alert Status */}
                 <Card className="">
@@ -258,10 +255,7 @@ export default function Inventory() {
                   <CardContent className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Alert Type</span>
-                      <StatusBadge
-                        status={alerts[selectedAlert].type === "dead-stock" ? "dead-stock" : alerts[selectedAlert].type === "stockout" ? "danger" : "warning"}
-                        showPulse
-                      >
+                      <StatusBadge status={alerts[selectedAlert].type === "dead-stock" ? "dead-stock" : alerts[selectedAlert].type === "stockout" ? "danger" : "warning"} showPulse>
                         {alerts[selectedAlert].type === "dead-stock" ? "Dead Stock" : alerts[selectedAlert].type === "stockout" ? "Stockout Risk" : "Low Activity"}
                       </StatusBadge>
                     </div>
@@ -357,7 +351,9 @@ export default function Inventory() {
                 {/* Action Buttons */}
                 <div className="flex gap-3">
                   <Button className="flex-1">Approve Reallocation</Button>
-                  <Button variant="outline" className="flex-1">Schedule Review</Button>
+                  <Button variant="outline" className="flex-1">
+                    Schedule Review
+                  </Button>
                 </div>
               </div>
             </>
@@ -383,7 +379,7 @@ export default function Inventory() {
                   </DrawerClose>
                 </div>
               </DrawerHeader>
-              
+
               <div className="p-6 space-y-6 overflow-y-auto">
                 {/* Stock Overview */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -439,7 +435,9 @@ export default function Inventory() {
                       </div>
                       <div className="space-y-1">
                         <p className="text-xs text-muted-foreground">Active Alerts</p>
-                        <p className="text-sm font-medium">{inventoryData[selectedInventory].alerts} alert{inventoryData[selectedInventory].alerts !== 1 ? 's' : ''}</p>
+                        <p className="text-sm font-medium">
+                          {inventoryData[selectedInventory].alerts} alert{inventoryData[selectedInventory].alerts !== 1 ? "s" : ""}
+                        </p>
                       </div>
                     </div>
                   </CardContent>
@@ -507,7 +505,9 @@ export default function Inventory() {
                 {/* Action Buttons */}
                 <div className="flex gap-3">
                   <Button className="flex-1">Request Transfer</Button>
-                  <Button variant="outline" className="flex-1">View on Map</Button>
+                  <Button variant="outline" className="flex-1">
+                    View on Map
+                  </Button>
                 </div>
               </div>
             </>
