@@ -387,7 +387,7 @@ export default function Inventory() {
               <div className="p-6 space-y-6 overflow-y-auto">
                 {/* Stock Overview */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Card className="glass-panel">
+                  <Card className="">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-sm font-medium text-muted-foreground">Current Stock</CardTitle>
                     </CardHeader>
@@ -396,7 +396,7 @@ export default function Inventory() {
                       <p className="text-xs text-muted-foreground mt-1">tons</p>
                     </CardContent>
                   </Card>
-                  <Card className="glass-panel">
+                  <Card className="">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-sm font-medium text-muted-foreground">Capacity</CardTitle>
                     </CardHeader>
@@ -405,7 +405,7 @@ export default function Inventory() {
                       <p className="text-xs text-muted-foreground mt-1">tons</p>
                     </CardContent>
                   </Card>
-                  <Card className="glass-panel">
+                  <Card className="">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-sm font-medium text-muted-foreground">Utilization</CardTitle>
                     </CardHeader>
@@ -417,7 +417,7 @@ export default function Inventory() {
                 </div>
 
                 {/* Stock Level Detail */}
-                <Card className="glass-panel">
+                <Card className="">
                   <CardHeader>
                     <CardTitle className="text-lg">Stock Status</CardTitle>
                   </CardHeader>
@@ -446,12 +446,12 @@ export default function Inventory() {
                 </Card>
 
                 {/* Movement History */}
-                <Card className="glass-panel">
+                <Card className="">
                   <CardHeader>
                     <CardTitle className="text-lg">Recent Movements</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <div className="flex items-start gap-3 p-3 rounded-lg bg-card/50 border border-border">
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50 border border-border">
                       <TrendingDown className="h-5 w-5 text-danger mt-0.5" />
                       <div className="flex-1">
                         <div className="flex justify-between items-start mb-1">
@@ -461,7 +461,7 @@ export default function Inventory() {
                         <p className="text-xs text-muted-foreground">45 tons to Kios Sleman</p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3 p-3 rounded-lg bg-card/50 border border-border">
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50 border border-border">
                       <TrendingUp className="h-5 w-5 text-success mt-0.5" />
                       <div className="flex-1">
                         <div className="flex justify-between items-start mb-1">
@@ -471,7 +471,7 @@ export default function Inventory() {
                         <p className="text-xs text-muted-foreground">200 tons from Plant A</p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3 p-3 rounded-lg bg-card/50 border border-border">
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50 border border-border">
                       <TrendingDown className="h-5 w-5 text-danger mt-0.5" />
                       <div className="flex-1">
                         <div className="flex justify-between items-start mb-1">
@@ -485,7 +485,7 @@ export default function Inventory() {
                 </Card>
 
                 {/* Forecast & Recommendations */}
-                <Card className="glass-panel border-l-4 border-l-primary">
+                <Card className="border-l-4 border-l-primary">
                   <CardHeader>
                     <CardTitle className="text-lg">AI Recommendations</CardTitle>
                     <CardDescription>Based on demand forecast & current stock levels</CardDescription>
