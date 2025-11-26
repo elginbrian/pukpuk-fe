@@ -1,10 +1,11 @@
+"use client";
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
 import { Layers, Calendar, TrendingUp, AlertTriangle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
-
 
 export default function Heatmap() {
   const [viewMode, setViewMode] = useState<"live" | "forecast">("forecast");
@@ -30,9 +31,7 @@ export default function Heatmap() {
     <div className="space-y-6 p-6 animate-fade-in">
       <div>
         <h1 className="text-3xl font-bold mb-2">Multi-Scale Demand Heatmap</h1>
-        <p className="text-muted-foreground">
-          Visualize fertilizer demand across territorial levels with AI-powered forecasting
-        </p>
+        <p className="text-muted-foreground">Visualize fertilizer demand across territorial levels with AI-powered forecasting</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -47,18 +46,10 @@ export default function Heatmap() {
             <div className="space-y-2">
               <label className="block text-sm font-medium mb-1">Data Mode</label>
               <div className="flex gap-2">
-                <Button
-                  variant={viewMode === "live" ? "default" : "outline"}
-                  className="flex-1"
-                  onClick={() => setViewMode("live")}
-                >
+                <Button variant={viewMode === "live" ? "default" : "outline"} className="flex-1" onClick={() => setViewMode("live")}>
                   Live
                 </Button>
-                <Button
-                  variant={viewMode === "forecast" ? "default" : "outline"}
-                  className="flex-1"
-                  onClick={() => setViewMode("forecast")}
-                >
+                <Button variant={viewMode === "forecast" ? "default" : "outline"} className="flex-1" onClick={() => setViewMode("forecast")}>
                   Forecast
                 </Button>
               </div>
@@ -108,15 +99,7 @@ export default function Heatmap() {
                   <label className="block text-sm font-medium mb-1">Forecast Period</label>
                   <span className="text-xs text-muted-foreground">Week {timeRange + 1}</span>
                 </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={12}
-                  step={1}
-                  value={timeRange}
-                  onChange={(e) => setTimeRange(Number(e.currentTarget.value))}
-                  className="w-full py-4 h-2 accent-primary"
-                />
+                <input type="range" min={0} max={12} step={1} value={timeRange} onChange={(e) => setTimeRange(Number(e.currentTarget.value))} className="w-full py-4 h-2 accent-primary" />
               </div>
             )}
 
@@ -128,7 +111,7 @@ export default function Heatmap() {
                   <span className="text-muted-foreground">Low</span>
                   <span className="text-muted-foreground">High</span>
                 </div>
-                <div className={`h-4 rounded bg-linear-to-r ${layerOptions.find(l => l.value === selectedLayer)?.color}`} />
+                <div className={`h-4 rounded bg-linear-to-r ${layerOptions.find((l) => l.value === selectedLayer)?.color}`} />
               </div>
             </div>
           </CardContent>
@@ -142,13 +125,8 @@ export default function Heatmap() {
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center space-y-4">
                   <Layers className="h-16 w-16 mx-auto text-primary/40" />
-                  <p className="text-muted-foreground">
-                    Interactive map would be rendered here
-                  </p>
-                  <p className="text-xs text-muted-foreground max-w-md">
-                    In production, integrate with Mapbox GL JS or Google Maps API to display
-                    geospatial heatmaps with drill-down capabilities across territorial levels
-                  </p>
+                  <p className="text-muted-foreground">Interactive map would be rendered here</p>
+                  <p className="text-xs text-muted-foreground max-w-md">In production, integrate with Mapbox GL JS or Google Maps API to display geospatial heatmaps with drill-down capabilities across territorial levels</p>
                 </div>
               </div>
 
@@ -177,9 +155,7 @@ export default function Heatmap() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Layer:</span>
-                      <span className="font-medium">
-                        {layerOptions.find(l => l.value === selectedLayer)?.label}
-                      </span>
+                      <span className="font-medium">{layerOptions.find((l) => l.value === selectedLayer)?.label}</span>
                     </div>
                   </CardContent>
                 </Card>
