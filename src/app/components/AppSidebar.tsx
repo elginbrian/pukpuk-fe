@@ -1,5 +1,7 @@
+"use client";
+
 import { Map, Package, MessageSquare, LayoutDashboard, TrendingUp, Navigation } from "lucide-react";
-import { NavLink } from "../components/NavLink";
+import { NavLink } from "./NavLink";
 import {
   Sidebar,
   SidebarContent,
@@ -10,15 +12,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "../components/ui/sidebar";
+} from "./ui/sidebar";
 
 const navigationItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Forecasting", url: "/forecasting", icon: TrendingUp },
-  { title: "Demand Heatmap", url: "/heatmap", icon: Map },
-  { title: "Route Optimization", url: "/routing", icon: Navigation },
-  { title: "Inventory Monitor", url: "/inventory", icon: Package },
-  { title: "AI Insights", url: "/insights", icon: MessageSquare },
+  { title: "Forecasting", url: "/features/forecasting-demand", icon: TrendingUp },
+  { title: "Demand Heatmap", url: "/features/demand-heatmap", icon: Map },
+  { title: "Route Optimization", url: "/features/route-optimization", icon: Navigation },
+  { title: "Inventory Monitor", url: "/features/inventory-monitor", icon: Package },
+  { title: "AI Insights", url: "/features/ai-insights", icon: MessageSquare },
 ];
 
 export function AppSidebar() {
@@ -44,8 +46,7 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink
-                      to={item.url}
-                      end
+                      href={item.url}
                       className="hover:bg-sidebar-accent transition-colors"
                       activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
                     >
