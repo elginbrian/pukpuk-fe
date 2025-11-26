@@ -27,16 +27,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
           <SidebarProvider>
             <AppSidebar />
             <SidebarInset className="flex flex-col">
               <Header />
-              <main className="flex-1 p-6 overflow-auto">
-                {children}
-              </main>
+              <main className="flex-1 p-6 overflow-auto">{children}</main>
             </SidebarInset>
           </SidebarProvider>
         </Providers>

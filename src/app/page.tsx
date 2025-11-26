@@ -1,5 +1,5 @@
-import Image from "next/image";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return <div className="space-y-6 p-6 animate-fade-in"></div>;
+  redirect("/features/forecasting-demand");
 }
