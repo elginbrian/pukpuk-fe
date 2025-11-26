@@ -6,15 +6,13 @@ import { StatusBadge } from "../../../components/StatusBadge";
 import { Button } from "../../../components/ui/button";
 import { AlertCircle, ArrowRight, Package, TrendingDown, Warehouse, X, Calendar, TrendingUp, MapPin, Truck } from "lucide-react";
 import { Progress } from "../../../components/ui/progress";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerClose } from "../../../components/ui/drawer";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "../../../components/ui/sheet";
 import { useState } from "react";
 import { Separator } from "../../../components/ui/separator";
-import { useIsMobile } from "../../../hooks/use-mobile";
 
 export default function Inventory() {
   const [selectedAlert, setSelectedAlert] = useState<number | null>(null);
   const [selectedInventory, setSelectedInventory] = useState<number | null>(null);
-  const isMobile = useIsMobile();
 
   const inventoryData = [
     {
@@ -88,14 +86,14 @@ export default function Inventory() {
   const getStockPercentage = (stock: number, capacity: number) => (stock / capacity) * 100;
 
   return (
-    <div className="space-y-6 p-6 animate-fade-in">
+    <div className="space-y-2 md:space-y-6 p-2 md:p-6 animate-fade-in">
       <div>
-        <h1 className="text-3xl font-bold mb-2">Inventory Monitoring</h1>
-        <p className="text-muted-foreground">Real-time stock levels and dead-stock detection across the supply chain</p>
+        <h1 className="text-2xl md:text-3xl font-bold mb-2">Inventory Monitoring</h1>
+        <p className="text-sm md:text-base text-muted-foreground">Real-time stock levels and dead-stock detection across the supply chain</p>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Locations</CardTitle>
@@ -174,52 +172,52 @@ export default function Inventory() {
           <CardDescription>Stock levels across all locations</CardDescription>
         </CardHeader>
         <CardContent>
-          {isMobile ? (
-            // Mobile card layout
-            <div className="space-y-4">
-              {inventoryData.map((item, index) => {
-                const percentage = getStockPercentage(item.stock, item.capacity);
-                return (
-                  <Card key={index} className="p-4">
-                    <div className="space-y-3">
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            {item.type === "plant" && <Package className="h-4 w-4 text-primary" />}
-                            {item.type === "warehouse" && <Warehouse className="h-4 w-4 text-secondary" />}
-                            {item.type === "kios" && <Package className="h-4 w-4 text-accent" />}
-                            <span className="font-medium">{item.location}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm text-muted-foreground capitalize">{item.type}</span>
-                            <StatusBadge status={item.status} showPulse={item.status === "dead-stock" || item.status === "danger"}>
-                              {item.status === "dead-stock" ? "Dead Stock" : item.status}
-                            </StatusBadge>
-                          </div>
+          {/* Mobile Card Layout */}
+          <div className="grid grid-cols-1 md:hidden gap-2">
+            {inventoryData.map((item, index) => {
+              const percentage = getStockPercentage(item.stock, item.capacity);
+              return (
+                <Card key={index} className="p-4">
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          {item.type === "plant" && <Package className="h-4 w-4 text-primary" />}
+                          {item.type === "warehouse" && <Warehouse className="h-4 w-4 text-secondary" />}
+                          {item.type === "kios" && <Package className="h-4 w-4 text-accent" />}
+                          <span className="font-medium">{item.location}</span>
                         </div>
-                        <Button variant="ghost" size="sm" onClick={() => setSelectedInventory(index)}>
-                          <ArrowRight className="h-4 w-4" />
-                        </Button>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground capitalize">{item.type}</span>
+                          <StatusBadge status={item.status} showPulse={item.status === "dead-stock" || item.status === "danger"}>
+                            {item.status === "dead-stock" ? "Dead Stock" : item.status}
+                          </StatusBadge>
+                        </div>
                       </div>
+                      <Button variant="ghost" size="sm" onClick={() => setSelectedInventory(index)}>
+                        <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    </div>
 
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="font-medium">{item.stock} tons</span>
-                          <span className="text-xs text-muted-foreground">{percentage.toFixed(0)}%</span>
-                        </div>
-                        <Progress value={percentage} className="h-2" />
-                        <div className="flex justify-between text-xs text-muted-foreground">
-                          <span>Capacity: {item.capacity} tons</span>
-                          <span>Last: {item.lastMovement}</span>
-                        </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="font-medium">{item.stock} tons</span>
+                        <span className="text-xs text-muted-foreground">{percentage.toFixed(0)}%</span>
+                      </div>
+                      <Progress value={percentage} className="h-2" />
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>Capacity: {item.capacity} tons</span>
+                        <span>Last: {item.lastMovement}</span>
                       </div>
                     </div>
-                  </Card>
-                );
-              })}
-            </div>
-          ) : (
-            // Desktop table layout
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+
+          {/* Desktop Table Layout */}
+          <div className="hidden md:block">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -272,28 +270,28 @@ export default function Inventory() {
                 })}
               </TableBody>
             </Table>
-          )}
+          </div>
         </CardContent>
       </Card>
 
-      {/* Alert Detail Drawer */}
-      <Drawer open={selectedAlert !== null} onOpenChange={(open) => !open && setSelectedAlert(null)}>
-        <DrawerContent className="max-h-[85vh]">
+      {/* Alert Detail Sheet */}
+      <Sheet open={selectedAlert !== null} onOpenChange={(open) => !open && setSelectedAlert(null)}>
+        <SheetContent className="max-h-[85vh] overflow-y-auto">
           {selectedAlert !== null && (
             <>
-              <DrawerHeader className="border-b border-border">
+              <SheetHeader className="border-b border-border">
                 <div className="flex items-start justify-between">
                   <div className="space-y-2">
-                    <DrawerTitle className="text-2xl">Alert Details</DrawerTitle>
-                    <DrawerDescription>{alerts[selectedAlert].location}</DrawerDescription>
+                    <SheetTitle className="text-2xl">Alert Details</SheetTitle>
+                    <SheetDescription>{alerts[selectedAlert].location}</SheetDescription>
                   </div>
-                  <DrawerClose asChild>
+                  <SheetClose asChild>
                     <Button variant="ghost" size="sm">
                       <X className="h-4 w-4" />
                     </Button>
-                  </DrawerClose>
+                  </SheetClose>
                 </div>
-              </DrawerHeader>
+              </SheetHeader>
 
               <div className="p-6 space-y-6 overflow-y-auto">
                 {/* Alert Status */}
@@ -331,7 +329,7 @@ export default function Inventory() {
                       <MapPin className="h-4 w-4 text-muted-foreground" />
                       <span className="text-sm">{alerts[selectedAlert].location}</span>
                     </div>
-                    <div className="grid grid-cols-2 gap-4 pt-3">
+                    <div className="grid grid-cols-2 gap-2 pt-3">
                       <div className="space-y-1">
                         <p className="text-xs text-muted-foreground">Distance from Plant</p>
                         <p className="text-sm font-medium">142 km</p>
@@ -407,31 +405,31 @@ export default function Inventory() {
               </div>
             </>
           )}
-        </DrawerContent>
-      </Drawer>
+        </SheetContent>
+      </Sheet>
 
-      {/* Inventory Detail Drawer */}
-      <Drawer open={selectedInventory !== null} onOpenChange={(open) => !open && setSelectedInventory(null)}>
-        <DrawerContent className="max-h-[85vh]">
+      {/* Inventory Detail Sheet */}
+      <Sheet open={selectedInventory !== null} onOpenChange={(open) => !open && setSelectedInventory(null)}>
+        <SheetContent className="max-h-[85vh] overflow-y-auto">
           {selectedInventory !== null && (
             <>
-              <DrawerHeader className="border-b border-border">
+              <SheetHeader className="border-b border-border">
                 <div className="flex items-start justify-between">
                   <div className="space-y-2">
-                    <DrawerTitle className="text-2xl">{inventoryData[selectedInventory].location}</DrawerTitle>
-                    <DrawerDescription className="capitalize">{inventoryData[selectedInventory].type} Facility</DrawerDescription>
+                    <SheetTitle className="text-2xl">{inventoryData[selectedInventory].location}</SheetTitle>
+                    <SheetDescription className="capitalize">{inventoryData[selectedInventory].type} Facility</SheetDescription>
                   </div>
-                  <DrawerClose asChild>
+                  <SheetClose asChild>
                     <Button variant="ghost" size="sm">
                       <X className="h-4 w-4" />
                     </Button>
-                  </DrawerClose>
+                  </SheetClose>
                 </div>
-              </DrawerHeader>
+              </SheetHeader>
 
               <div className="p-6 space-y-6 overflow-y-auto">
                 {/* Stock Overview */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                   <Card className="">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-sm font-medium text-muted-foreground">Current Stock</CardTitle>
@@ -477,7 +475,7 @@ export default function Inventory() {
                       <Progress value={getStockPercentage(inventoryData[selectedInventory].stock, inventoryData[selectedInventory].capacity)} className="h-2" />
                     </div>
                     <Separator />
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
                         <p className="text-xs text-muted-foreground">Last Movement</p>
                         <p className="text-sm font-medium">{inventoryData[selectedInventory].lastMovement}</p>
@@ -561,8 +559,8 @@ export default function Inventory() {
               </div>
             </>
           )}
-        </DrawerContent>
-      </Drawer>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

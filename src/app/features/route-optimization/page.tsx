@@ -46,20 +46,20 @@ const Routing = () => {
   const currentRoute = routeOptions[selectedRoute];
 
   return (
-    <div className="space-y-6 p-6 animate-fade-in">
+    <div className="space-y-2 md:space-y-6 p-2 md:p-6 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-0">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Route Optimization</h1>
-          <p className="text-muted-foreground">Cost-aware, Fuel-aware, Toll-aware Planning</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">Route Optimization</h1>
+          <p className="text-sm md:text-base text-muted-foreground">Cost-aware, Fuel-aware, Toll-aware Planning</p>
         </div>
-        <Button className="gap-2">
+        <Button className="gap-2 self-start md:self-auto mb-4 mt-2">
           <Send className="h-4 w-4" />
           Send to Logistics Team
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-6">
         {/* Left Panel - Controls */}
         <div className="space-y-6">
           {/* Origin & Destination */}

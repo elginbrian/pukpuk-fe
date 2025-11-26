@@ -7,15 +7,15 @@ import { ScenarioSimulation } from "../../../components/ScenarioSimulation";
 
 export default function DemandForecasting() {
   return (
-    <div className="space-y-6 p-6 animate-fade-in">
+    <div className="space-y-2 md:space-y-6 p-2 md:p-6 animate-fade-in">
       <div>
-        <h1 className="text-3xl font-bold mb-2">Demand Forecasting</h1>
-        <p className="text-muted-foreground">AI-powered multivariate demand prediction using CatBoost model</p>
+        <h1 className="text-2xl md:text-3xl font-bold mb-2">Demand Forecasting</h1>
+        <p className="text-sm md:text-base text-muted-foreground">AI-powered multivariate demand prediction using CatBoost model</p>
       </div>
 
       <MetricCards />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-6">
         <ForecastChart />
         <ModelConfiguration />
       </div>
