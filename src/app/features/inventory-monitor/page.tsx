@@ -9,10 +9,12 @@ import { Progress } from "../../../components/ui/progress";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerClose } from "../../../components/ui/drawer";
 import { useState } from "react";
 import { Separator } from "../../../components/ui/separator";
+import { useIsMobile } from "../../../hooks/use-mobile";
 
 export default function Inventory() {
   const [selectedAlert, setSelectedAlert] = useState<number | null>(null);
   const [selectedInventory, setSelectedInventory] = useState<number | null>(null);
+  const isMobile = useIsMobile();
 
   const inventoryData = [
     {
@@ -165,65 +167,112 @@ export default function Inventory() {
         </CardContent>
       </Card>
 
-      {/* Inventory Table */}
+      {/* Inventory Overview */}
       <Card>
         <CardHeader>
           <CardTitle>Inventory Overview</CardTitle>
           <CardDescription>Stock levels across all locations</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Location</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Stock Level</TableHead>
-                <TableHead>Capacity</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Last Movement</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody className="bg-background">
+          {isMobile ? (
+            // Mobile card layout
+            <div className="space-y-4">
               {inventoryData.map((item, index) => {
                 const percentage = getStockPercentage(item.stock, item.capacity);
                 return (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium">
-                      <div className="flex items-center gap-2">
-                        {item.type === "plant" && <Package className="h-4 w-4 text-primary" />}
-                        {item.type === "warehouse" && <Warehouse className="h-4 w-4 text-secondary" />}
-                        {item.type === "kios" && <Package className="h-4 w-4 text-accent" />}
-                        {item.location}
+                  <Card key={index} className="p-4">
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            {item.type === "plant" && <Package className="h-4 w-4 text-primary" />}
+                            {item.type === "warehouse" && <Warehouse className="h-4 w-4 text-secondary" />}
+                            {item.type === "kios" && <Package className="h-4 w-4 text-accent" />}
+                            <span className="font-medium">{item.location}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-muted-foreground capitalize">{item.type}</span>
+                            <StatusBadge status={item.status} showPulse={item.status === "dead-stock" || item.status === "danger"}>
+                              {item.status === "dead-stock" ? "Dead Stock" : item.status}
+                            </StatusBadge>
+                          </div>
+                        </div>
+                        <Button variant="ghost" size="sm" onClick={() => setSelectedInventory(index)}>
+                          <ArrowRight className="h-4 w-4" />
+                        </Button>
                       </div>
-                    </TableCell>
-                    <TableCell className="capitalize">{item.type}</TableCell>
-                    <TableCell>
-                      <div className="space-y-1">
+
+                      <div className="space-y-2">
                         <div className="flex items-center justify-between text-sm">
                           <span className="font-medium">{item.stock} tons</span>
                           <span className="text-xs text-muted-foreground">{percentage.toFixed(0)}%</span>
                         </div>
                         <Progress value={percentage} className="h-2" />
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>Capacity: {item.capacity} tons</span>
+                          <span>Last: {item.lastMovement}</span>
+                        </div>
                       </div>
-                    </TableCell>
-                    <TableCell>{item.capacity} tons</TableCell>
-                    <TableCell>
-                      <StatusBadge status={item.status} showPulse={item.status === "dead-stock" || item.status === "danger"}>
-                        {item.status === "dead-stock" ? "Dead Stock" : item.status}
-                      </StatusBadge>
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{item.lastMovement}</TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="ghost" size="sm" onClick={() => setSelectedInventory(index)}>
-                        View Details
-                      </Button>
-                    </TableCell>
-                  </TableRow>
+                    </div>
+                  </Card>
                 );
               })}
-            </TableBody>
-          </Table>
+            </div>
+          ) : (
+            // Desktop table layout
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Stock Level</TableHead>
+                  <TableHead>Capacity</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Last Movement</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody className="bg-background">
+                {inventoryData.map((item, index) => {
+                  const percentage = getStockPercentage(item.stock, item.capacity);
+                  return (
+                    <TableRow key={index}>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          {item.type === "plant" && <Package className="h-4 w-4 text-primary" />}
+                          {item.type === "warehouse" && <Warehouse className="h-4 w-4 text-secondary" />}
+                          {item.type === "kios" && <Package className="h-4 w-4 text-accent" />}
+                          {item.location}
+                        </div>
+                      </TableCell>
+                      <TableCell className="capitalize">{item.type}</TableCell>
+                      <TableCell>
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="font-medium">{item.stock} tons</span>
+                            <span className="text-xs text-muted-foreground">{percentage.toFixed(0)}%</span>
+                          </div>
+                          <Progress value={percentage} className="h-2" />
+                        </div>
+                      </TableCell>
+                      <TableCell>{item.capacity} tons</TableCell>
+                      <TableCell>
+                        <StatusBadge status={item.status} showPulse={item.status === "dead-stock" || item.status === "danger"}>
+                          {item.status === "dead-stock" ? "Dead Stock" : item.status}
+                        </StatusBadge>
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{item.lastMovement}</TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="sm" onClick={() => setSelectedInventory(index)}>
+                          View Details
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
 
