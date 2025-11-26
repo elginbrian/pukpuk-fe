@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
@@ -119,37 +115,56 @@ All colors MUST be HSL.
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-geist-sans), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
 @layer utilities {
   .glass-panel {
-    @apply backdrop-blur-md bg-[var(--glass-bg)] border border-[var(--glass-border)] shadow-[var(--shadow-glass)];
+    backdrop-filter: blur(12px);
+    background-color: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-glass);
   }
 
   .status-healthy {
-    @apply bg-success/10 text-success border-success/20;
+    background-color: hsl(var(--success) / 0.1);
+    color: hsl(var(--success));
+    border-color: hsl(var(--success) / 0.2);
   }
 
   .status-warning {
-    @apply bg-warning/10 text-warning border-warning/20;
+    background-color: hsl(var(--warning) / 0.1);
+    color: hsl(var(--warning));
+    border-color: hsl(var(--warning) / 0.2);
   }
 
   .status-danger {
-    @apply bg-destructive/10 text-destructive border-destructive/20;
+    background-color: hsl(var(--destructive) / 0.1);
+    color: hsl(var(--destructive));
+    border-color: hsl(var(--destructive) / 0.2);
   }
 
   .status-info {
-    @apply bg-info/10 text-info border-info/20;
+    background-color: hsl(var(--info) / 0.1);
+    color: hsl(var(--info));
+    border-color: hsl(var(--info) / 0.2);
   }
 
   .hover-glow {
-    @apply transition-all duration-300 hover:shadow-[0_0_20px_rgba(46,204,113,0.3)];
+    transition: all 0.3s;
+  }
+  
+  .hover-glow:hover {
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
   }
 
   .pulse-live {
