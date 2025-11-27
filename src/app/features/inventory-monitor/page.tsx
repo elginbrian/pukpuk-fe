@@ -20,7 +20,7 @@ export default function Inventory() {
       type: "plant",
       stock: 1250,
       capacity: 2000,
-      status: "healthy" as const,
+      status: "Healthy" as const,
       lastMovement: "2 hours ago",
       alerts: 0,
     },
@@ -29,7 +29,7 @@ export default function Inventory() {
       type: "warehouse",
       stock: 450,
       capacity: 800,
-      status: "warning" as const,
+      status: "Warning" as const,
       lastMovement: "5 days ago",
       alerts: 1,
     },
@@ -38,7 +38,7 @@ export default function Inventory() {
       type: "warehouse",
       stock: 680,
       capacity: 1000,
-      status: "dead-stock" as const,
+      status: "Dead-Stock" as const,
       lastMovement: "18 days ago",
       alerts: 2,
     },
@@ -47,7 +47,7 @@ export default function Inventory() {
       type: "kios",
       stock: 45,
       capacity: 200,
-      status: "danger" as const,
+      status: "Danger" as const,
       lastMovement: "1 hour ago",
       alerts: 1,
     },
@@ -56,7 +56,7 @@ export default function Inventory() {
       type: "kios",
       stock: 180,
       capacity: 200,
-      status: "healthy" as const,
+      status: "Healthy" as const,
       lastMovement: "3 hours ago",
       alerts: 0,
     },
@@ -64,19 +64,19 @@ export default function Inventory() {
 
   const alerts = [
     {
-      type: "dead-stock",
+      type: "Dead-Stock",
       location: "Warehouse B - Surabaya",
       message: "18 days no movement detected",
       action: "Reallocation recommended",
     },
     {
-      type: "stockout",
+      type: "Stockout",
       location: "Kios Bantul",
       message: "Stock critically low (22.5% capacity)",
       action: "Emergency refill required",
     },
     {
-      type: "slow-movement",
+      type: "Slow-Movement",
       location: "Warehouse A - Bandung",
       message: "5 days since last movement",
       action: "Monitor for dead-stock risk",
@@ -93,7 +93,7 @@ export default function Inventory() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Locations</CardTitle>
@@ -144,17 +144,17 @@ export default function Inventory() {
           </div>
           <CardDescription>Immediate actions required</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="grid grid-cols-2 md:grid-cols-1 gap-3">
           {alerts.map((alert, index) => (
             <div key={index} className="flex items-start justify-between p-4 rounded-lg border border-border bg-background hover-glow">
               <div className="space-y-1 flex-1">
                 <div className="flex items-center gap-2">
-                  <StatusBadge status={alert.type === "dead-stock" ? "dead-stock" : alert.type === "stockout" ? "danger" : "warning"} showPulse>
-                    {alert.type === "dead-stock" ? "Dead Stock" : alert.type === "stockout" ? "Stockout Risk" : "Low Activity"}
-                  </StatusBadge>
-                  <span className="font-medium">{alert.location}</span>
+                  <StatusBadge status={alert.type === "Dead-Stock" ? "Dead-Stock" : alert.type === "Stockout" ? "Danger" : "Warning"} showPulse>
+                      {alert.type === "Dead-Stock" ? "Dead Stock" : alert.type === "Stockout" ? "Stockout Risk" : "Low Activity"}
+                    </StatusBadge>
+                  <span className="text-xs md:text-md font-medium">{alert.location}</span>
                 </div>
-                <p className="text-sm text-muted-foreground">{alert.message}</p>
+                <p className="text-xs md:text-sm text-muted-foreground">{alert.message}</p>
                 <p className="text-sm text-primary font-medium">{alert.action}</p>
               </div>
               <Button variant="ghost" size="sm" onClick={() => setSelectedAlert(index)}>
@@ -168,20 +168,20 @@ export default function Inventory() {
       {/* Inventory Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Inventory Overview</CardTitle>
-          <CardDescription>Stock levels across all locations</CardDescription>
+          <CardTitle className="text-lg md:text-xl">Inventory Overview</CardTitle>
+          <CardDescription className="text-xs md:text-sm">Stock levels across all locations</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Location</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Stock Level</TableHead>
-                <TableHead>Capacity</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Last Movement</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-xs md:text-sm">Location</TableHead>
+                <TableHead className="text-xs md:text-sm">Type</TableHead>
+                <TableHead className="text-xs md:text-sm">Stock Level</TableHead>
+                <TableHead className="text-xs md:text-sm">Capacity</TableHead>
+                <TableHead className="text-xs md:text-sm">Status</TableHead>
+                <TableHead className="text-xs md:text-sm">Last Movement</TableHead>
+                <TableHead className="text-right text-xs md:text-sm">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody className="bg-background">
@@ -189,34 +189,43 @@ export default function Inventory() {
                 const percentage = getStockPercentage(item.stock, item.capacity);
                 return (
                   <TableRow key={index}>
-                    <TableCell className="font-medium">
-                      <div className="flex items-center gap-2">
-                        {item.type === "plant" && <Package className="h-4 w-4 text-primary" />}
-                        {item.type === "warehouse" && <Warehouse className="h-4 w-4 text-secondary" />}
-                        {item.type === "kios" && <Package className="h-4 w-4 text-accent" />}
-                        {item.location}
+                    <TableCell className="font-medium text-xs md:text-sm">
+                      <div className="flex items-center gap-1 md:gap-2">
+                        {item.type === "plant" && <Package className="h-3 w-3 md:h-4 md:w-4 text-primary flex-shrink-0" />}
+                        {item.type === "warehouse" && <Warehouse className="h-3 w-3 md:h-4 md:w-4 text-secondary flex-shrink-0" />}
+                        {item.type === "kios" && <Package className="h-3 w-3 md:h-4 md:w-4 text-accent flex-shrink-0" />}
+                        <span className="truncate max-w-[120px] md:max-w-none">{item.location}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="capitalize">{item.type}</TableCell>
-                    <TableCell>
+                    <TableCell className="capitalize text-xs md:text-sm">{item.type}</TableCell>
+                    <TableCell className="min-w-[100px] md:min-w-[120px]">
                       <div className="space-y-1">
-                        <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center justify-between text-[10px] md:text-sm">
                           <span className="font-medium">{item.stock} tons</span>
-                          <span className="text-xs text-muted-foreground">{percentage.toFixed(0)}%</span>
+                          <span className="text-[8px] md:text-xs text-muted-foreground">{percentage.toFixed(0)}%</span>
                         </div>
-                        <Progress value={percentage} className="h-2" />
+                        <Progress value={percentage} className="h-1.5 md:h-2" />
                       </div>
                     </TableCell>
-                    <TableCell>{item.capacity} tons</TableCell>
-                    <TableCell>
-                      <StatusBadge status={item.status} showPulse={item.status === "dead-stock" || item.status === "danger"}>
-                        {item.status === "dead-stock" ? "Dead Stock" : item.status}
+                    <TableCell className="text-xs md:text-sm whitespace-nowrap">{item.capacity} tons</TableCell>
+                    <TableCell className="min-w-[120px] md:min-w-[100px]">
+                      <StatusBadge 
+                        status={item.status} 
+                        className="text-[10px] md:text-xs"
+                      >
+                        {item.status === "Dead-Stock" ? "Dead Stock" : item.status}
                       </StatusBadge>
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{item.lastMovement}</TableCell>
+                    <TableCell className="min-w-[80px] md:min-w-[100px] text-[10px] md:text-sm text-muted-foreground whitespace-nowrap">{item.lastMovement}</TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="sm" onClick={() => setSelectedInventory(index)}>
-                        View Details
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => setSelectedInventory(index)}
+                        className="text-xs md:text-sm h-7 md:h-8 px-2 md:px-3"
+                      >
+                        <span className="hidden md:inline">View Details</span>
+                        <span className="md:hidden">Details</span>
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -255,8 +264,8 @@ export default function Inventory() {
                   <CardContent className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Alert Type</span>
-                      <StatusBadge status={alerts[selectedAlert].type === "dead-stock" ? "dead-stock" : alerts[selectedAlert].type === "stockout" ? "danger" : "warning"} showPulse>
-                        {alerts[selectedAlert].type === "dead-stock" ? "Dead Stock" : alerts[selectedAlert].type === "stockout" ? "Stockout Risk" : "Low Activity"}
+                      <StatusBadge status={alerts[selectedAlert].type === "Dead-Stock" ? "Dead-Stock" : alerts[selectedAlert].type === "Stockout" ? "Danger" : "Warning"} showPulse>
+                        {alerts[selectedAlert].type === "Dead-Stock" ? "Dead Stock" : alerts[selectedAlert].type === "Stockout" ? "Stockout Risk" : "Low Activity"}
                       </StatusBadge>
                     </div>
                     <Separator />
@@ -382,7 +391,7 @@ export default function Inventory() {
 
               <div className="p-6 space-y-6 overflow-y-auto">
                 {/* Stock Overview */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 md:grid-cols-3 gap-4">
                   <Card className="">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-sm font-medium text-muted-foreground">Current Stock</CardTitle>
@@ -421,8 +430,8 @@ export default function Inventory() {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-muted-foreground">Current Status</span>
-                        <StatusBadge status={inventoryData[selectedInventory].status} showPulse={inventoryData[selectedInventory].status === "dead-stock" || inventoryData[selectedInventory].status === "danger"}>
-                          {inventoryData[selectedInventory].status === "dead-stock" ? "Dead Stock" : inventoryData[selectedInventory].status}
+                        <StatusBadge status={inventoryData[selectedInventory].status} showPulse={inventoryData[selectedInventory].status === "Dead-Stock" || inventoryData[selectedInventory].status === "Danger"}>
+                          {inventoryData[selectedInventory].status === "Dead-Stock" ? "Dead Stock" : inventoryData[selectedInventory].status}
                         </StatusBadge>
                       </div>
                       <Progress value={getStockPercentage(inventoryData[selectedInventory].stock, inventoryData[selectedInventory].capacity)} className="h-2" />
