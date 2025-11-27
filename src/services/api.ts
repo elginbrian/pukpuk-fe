@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import { ForecastData, Metrics, ForecastRequest, ScenarioRequest } from "../types";
+import { ForecastData, Metrics, ForecastRequest, ScenarioRequest, AIInsightRequest, AIInsightResponse, ChatRequest, ChatResponse, CreateSessionRequest, CreateSessionResponse, ChatMessage } from "../types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
 
@@ -34,6 +34,33 @@ class ApiService {
     const response = await this.axiosInstance.get(`/forecasting/export`, {
       params: { crop_type: cropType, region, season, format },
       responseType: "blob",
+    });
+    return response.data;
+  }
+
+  async generateAIInsight(request: AIInsightRequest): Promise<AIInsightResponse> {
+    const response = await this.axiosInstance.post<AIInsightResponse>("/ai-insight/chat", {
+      message: request.query,
+      session_id: request.session_id,
+      crop_type: request.crop_type || "rice",
+      region: request.region || "jawa-barat",
+      season: request.season || "wet-season",
+    });
+    return response.data;
+  }
+
+  async createChatSession(request: CreateSessionRequest = {}): Promise<CreateSessionResponse> {
+    const response = await this.axiosInstance.post<CreateSessionResponse>("/ai-insight/session", {
+      crop_type: request.crop_type || "rice",
+      region: request.region || "jawa-barat",
+      season: request.season || "wet-season",
+    });
+    return response.data;
+  }
+
+  async getChatHistory(sessionId: string, limit: number = 50): Promise<ChatMessage[]> {
+    const response = await this.axiosInstance.get<ChatMessage[]>(`/ai-insight/session/${sessionId}/history`, {
+      params: { limit },
     });
     return response.data;
   }
