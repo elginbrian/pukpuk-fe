@@ -171,6 +171,7 @@ export default function Inventory() {
                           <span className="text-sm text-muted-foreground capitalize">{item.type}</span>
                           <StatusBadge status={item.status} showPulse={item.status === "Dead-Stock" || item.status === "Danger"}>
                             {item.status === "Dead-Stock" ? "Dead Stock" : item.status}
+
                           </StatusBadge>
                         </div>
                       </div>
@@ -237,6 +238,7 @@ export default function Inventory() {
                       <TableCell>
                         <StatusBadge status={item.status} showPulse={item.status === "Dead-Stock" || item.status === "Danger"}>
                           {item.status === "Dead-Stock" ? "Dead Stock" : item.status}
+
                         </StatusBadge>
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">{item.lastMovement}</TableCell>
@@ -263,6 +265,7 @@ export default function Inventory() {
                 <div className="space-y-2">
                   <SheetTitle className="text-2xl">Alert Details</SheetTitle>
                   <SheetDescription>{alerts[selectedAlert].location}</SheetDescription>
+=
                 </div>
               </SheetHeader>
 
