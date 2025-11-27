@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import { SidebarProvider, SidebarInset } from "./components/ui/sidebar";
-import { AppSidebar } from "./components/AppSidebar";
-import { Header } from "./components/Header";
+import { SidebarProvider, SidebarInset } from "../components/ui/sidebar";
+import { AppSidebar } from "../components/AppSidebar";
+import { Header } from "../components/Header";
+import { AlertProvider } from "../context/AlertContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,18 +28,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
         <Providers>
-          <SidebarProvider>
-            <AppSidebar />
-            <SidebarInset className="flex flex-col">
-              <Header />
-              <main className="flex-1 p-6 overflow-auto">
-                {children}
-              </main>
-            </SidebarInset>
-          </SidebarProvider>
+          <AlertProvider>
+            <SidebarProvider>
+              <AppSidebar />
+              <SidebarInset className="flex flex-col">
+                <Header />
+                <main className="flex-1 p-6 overflow-auto">{children}</main>
+              </SidebarInset>
+            </SidebarProvider>
+          </AlertProvider>
         </Providers>
       </body>
     </html>

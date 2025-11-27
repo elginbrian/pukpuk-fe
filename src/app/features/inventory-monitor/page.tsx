@@ -1,17 +1,18 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
-import { StatusBadge } from "../../components/StatusBadge";
-import { Button } from "../../components/ui/button";
-import { AlertCircle, ArrowRight, Package, TrendingDown, Warehouse, X, Calendar, TrendingUp, MapPin, Truck } from "lucide-react";
-import { Progress } from "../../components/ui/progress";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerClose } from "../../components/ui/drawer";
 import { useState } from "react";
-import { Separator } from "../../components/ui/separator";
+import { useAlerts } from "../../../context/AlertContext";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/table";
+import { StatusBadge } from "../../../components/StatusBadge";
+import { Button } from "../../../components/ui/button";
+import { AlertCircle, ArrowRight, Package, TrendingDown, Warehouse, X, Calendar, TrendingUp, MapPin, Truck } from "lucide-react";
+import { Progress } from "../../../components/ui/progress";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "../../../components/ui/sheet";
+import { Separator } from "../../../components/ui/separator";
 
 export default function Inventory() {
-  const [selectedAlert, setSelectedAlert] = useState<number | null>(null);
+  const { alerts, selectedAlert, setSelectedAlert } = useAlerts();
   const [selectedInventory, setSelectedInventory] = useState<number | null>(null);
 
   const inventoryData = [
@@ -20,7 +21,7 @@ export default function Inventory() {
       type: "plant",
       stock: 1250,
       capacity: 2000,
-      status: "healthy" as const,
+      status: "Healthy" as const,
       lastMovement: "2 hours ago",
       alerts: 0,
     },
@@ -29,7 +30,7 @@ export default function Inventory() {
       type: "warehouse",
       stock: 450,
       capacity: 800,
-      status: "warning" as const,
+      status: "Warning" as const,
       lastMovement: "5 days ago",
       alerts: 1,
     },
@@ -38,7 +39,7 @@ export default function Inventory() {
       type: "warehouse",
       stock: 680,
       capacity: 1000,
-      status: "dead-stock" as const,
+      status: "Dead-Stock" as const,
       lastMovement: "18 days ago",
       alerts: 2,
     },
@@ -47,7 +48,7 @@ export default function Inventory() {
       type: "kios",
       stock: 45,
       capacity: 200,
-      status: "danger" as const,
+      status: "Danger" as const,
       lastMovement: "1 hour ago",
       alerts: 1,
     },
@@ -56,46 +57,23 @@ export default function Inventory() {
       type: "kios",
       stock: 180,
       capacity: 200,
-      status: "healthy" as const,
+      status: "Healthy" as const,
       lastMovement: "3 hours ago",
       alerts: 0,
-    },
-  ];
-
-  const alerts = [
-    {
-      type: "dead-stock",
-      location: "Warehouse B - Surabaya",
-      message: "18 days no movement detected",
-      action: "Reallocation recommended",
-    },
-    {
-      type: "stockout",
-      location: "Kios Bantul",
-      message: "Stock critically low (22.5% capacity)",
-      action: "Emergency refill required",
-    },
-    {
-      type: "slow-movement",
-      location: "Warehouse A - Bandung",
-      message: "5 days since last movement",
-      action: "Monitor for dead-stock risk",
     },
   ];
 
   const getStockPercentage = (stock: number, capacity: number) => (stock / capacity) * 100;
 
   return (
-    <div className="space-y-6 p-6 animate-fade-in">
+    <div className="space-y-2 md:space-y-6 p-2 md:p-6 animate-fade-in">
       <div>
-        <h1 className="text-3xl font-bold mb-2">Inventory Monitoring</h1>
-        <p className="text-muted-foreground">
-          Real-time stock levels and dead-stock detection across the supply chain
-        </p>
+        <h1 className="text-2xl md:text-3xl font-bold mb-2">Inventory Monitoring</h1>
+        <p className="text-sm md:text-base text-muted-foreground">Real-time stock levels and dead-stock detection across the supply chain</p>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Locations</CardTitle>
@@ -146,20 +124,17 @@ export default function Inventory() {
           </div>
           <CardDescription>Immediate actions required</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="grid grid-cols-2 md:grid-cols-1 gap-3">
           {alerts.map((alert, index) => (
             <div key={index} className="flex items-start justify-between p-4 rounded-lg border border-border bg-background hover-glow">
               <div className="space-y-1 flex-1">
                 <div className="flex items-center gap-2">
-                  <StatusBadge
-                    status={alert.type === "dead-stock" ? "dead-stock" : alert.type === "stockout" ? "danger" : "warning"}
-                    showPulse
-                  >
-                    {alert.type === "dead-stock" ? "Dead Stock" : alert.type === "stockout" ? "Stockout Risk" : "Low Activity"}
+                  <StatusBadge status={alert.type === "Dead-Stock" ? "Dead-Stock" : alert.type === "Stockout" ? "Danger" : "Warning"} showPulse>
+                    {alert.type === "Dead-Stock" ? "Dead Stock" : alert.type === "Stockout" ? "Stockout Risk" : "Low Activity"}
                   </StatusBadge>
-                  <span className="font-medium">{alert.location}</span>
+                  <span className="text-xs md:text-md font-medium">{alert.location}</span>
                 </div>
-                <p className="text-sm text-muted-foreground">{alert.message}</p>
+                <p className="text-xs md:text-sm text-muted-foreground">{alert.message}</p>
                 <p className="text-sm text-primary font-medium">{alert.action}</p>
               </div>
               <Button variant="ghost" size="sm" onClick={() => setSelectedAlert(index)}>
@@ -170,86 +145,131 @@ export default function Inventory() {
         </CardContent>
       </Card>
 
-      {/* Inventory Table */}
+      {/* Inventory Overview */}
       <Card>
         <CardHeader>
-          <CardTitle>Inventory Overview</CardTitle>
-          <CardDescription>Stock levels across all locations</CardDescription>
+          <CardTitle className="text-lg md:text-xl">Inventory Overview</CardTitle>
+          <CardDescription className="text-xs md:text-sm">Stock levels across all locations</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Location</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Stock Level</TableHead>
-                <TableHead>Capacity</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Last Movement</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody className="bg-background">
-              {inventoryData.map((item, index) => {
-                const percentage = getStockPercentage(item.stock, item.capacity);
-                return (
-                  <TableRow key={index} >
-                    <TableCell className="font-medium">
-                      <div className="flex items-center gap-2">
-                        {item.type === "plant" && <Package className="h-4 w-4 text-primary" />}
-                        {item.type === "warehouse" && <Warehouse className="h-4 w-4 text-secondary" />}
-                        {item.type === "kios" && <Package className="h-4 w-4 text-accent" />}
-                        {item.location}
-                      </div>
-                    </TableCell>
-                    <TableCell className="capitalize">{item.type}</TableCell>
-                    <TableCell>
+          {/* Mobile Card Layout */}
+          <div className="grid grid-cols-1 md:hidden gap-2">
+            {inventoryData.map((item, index) => {
+              const percentage = getStockPercentage(item.stock, item.capacity);
+              return (
+                <Card key={index} className="p-4">
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between">
                       <div className="space-y-1">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="font-medium">{item.stock} tons</span>
-                          <span className="text-xs text-muted-foreground">{percentage.toFixed(0)}%</span>
+                        <div className="flex items-center gap-2">
+                          {item.type === "plant" && <Package className="h-4 w-4 text-primary" />}
+                          {item.type === "warehouse" && <Warehouse className="h-4 w-4 text-secondary" />}
+                          {item.type === "kios" && <Package className="h-4 w-4 text-accent" />}
+                          <span className="font-medium">{item.location}</span>
                         </div>
-                        <Progress value={percentage} className="h-2" />
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground capitalize">{item.type}</span>
+                          <StatusBadge status={item.status} showPulse={item.status === "Dead-Stock" || item.status === "Danger"}>
+                            {item.status === "Dead-Stock" ? "Dead Stock" : item.status}
+
+                          </StatusBadge>
+                        </div>
                       </div>
-                    </TableCell>
-                    <TableCell>{item.capacity} tons</TableCell>
-                    <TableCell>
-                      <StatusBadge status={item.status} showPulse={item.status === "dead-stock" || item.status === "danger"}>
-                        {item.status === "dead-stock" ? "Dead Stock" : item.status}
-                      </StatusBadge>
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{item.lastMovement}</TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="ghost" size="sm" onClick={() => setSelectedInventory(index)}>View Details</Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+                      <Button variant="ghost" size="sm" onClick={() => setSelectedInventory(index)}>
+                        <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="font-medium">{item.stock} tons</span>
+                        <span className="text-xs text-muted-foreground">{percentage.toFixed(0)}%</span>
+                      </div>
+                      <Progress value={percentage} className="h-2" />
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>Capacity: {item.capacity} tons</span>
+                        <span>Last: {item.lastMovement}</span>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+
+          {/* Desktop Table Layout */}
+          <div className="hidden md:block">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Stock Level</TableHead>
+                  <TableHead>Capacity</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Last Movement</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody className="bg-background">
+                {inventoryData.map((item, index) => {
+                  const percentage = getStockPercentage(item.stock, item.capacity);
+                  return (
+                    <TableRow key={index}>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          {item.type === "plant" && <Package className="h-4 w-4 text-primary" />}
+                          {item.type === "warehouse" && <Warehouse className="h-4 w-4 text-secondary" />}
+                          {item.type === "kios" && <Package className="h-4 w-4 text-accent" />}
+                          {item.location}
+                        </div>
+                      </TableCell>
+                      <TableCell className="capitalize">{item.type}</TableCell>
+                      <TableCell>
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="font-medium">{item.stock} tons</span>
+                            <span className="text-xs text-muted-foreground">{percentage.toFixed(0)}%</span>
+                          </div>
+                          <Progress value={percentage} className="h-2" />
+                        </div>
+                      </TableCell>
+                      <TableCell>{item.capacity} tons</TableCell>
+                      <TableCell>
+                        <StatusBadge status={item.status} showPulse={item.status === "Dead-Stock" || item.status === "Danger"}>
+                          {item.status === "Dead-Stock" ? "Dead Stock" : item.status}
+
+                        </StatusBadge>
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{item.lastMovement}</TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="sm" onClick={() => setSelectedInventory(index)}>
+                          View Details
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
 
-      {/* Alert Detail Drawer */}
-      <Drawer open={selectedAlert !== null} onOpenChange={(open) => !open && setSelectedAlert(null)}>
-        <DrawerContent className="max-h-[85vh]">
+      {/* Alert Detail Sheet */}
+      <Sheet open={selectedAlert !== null} onOpenChange={(open) => !open && setSelectedAlert(null)}>
+        <SheetContent className="h-screen overflow-y-auto overflow-x-hidden w-full sm:max-w-2xl">
           {selectedAlert !== null && (
             <>
-              <DrawerHeader className="border-b border-border">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <DrawerTitle className="text-2xl">Alert Details</DrawerTitle>
-                    <DrawerDescription>{alerts[selectedAlert].location}</DrawerDescription>
-                  </div>
-                  <DrawerClose asChild>
-                    <Button variant="ghost" size="sm">
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </DrawerClose>
+              <SheetHeader className="border-b border-border">
+                <div className="space-y-2">
+                  <SheetTitle className="text-2xl">Alert Details</SheetTitle>
+                  <SheetDescription>{alerts[selectedAlert].location}</SheetDescription>
+=
                 </div>
-              </DrawerHeader>
-              
-              <div className="p-6 space-y-6 overflow-y-auto">
+              </SheetHeader>
+
+              <div className="p-6 space-y-6 overflow-y-auto overflow-x-hidden">
                 {/* Alert Status */}
                 <Card className="">
                   <CardHeader>
@@ -258,11 +278,8 @@ export default function Inventory() {
                   <CardContent className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Alert Type</span>
-                      <StatusBadge
-                        status={alerts[selectedAlert].type === "dead-stock" ? "dead-stock" : alerts[selectedAlert].type === "stockout" ? "danger" : "warning"}
-                        showPulse
-                      >
-                        {alerts[selectedAlert].type === "dead-stock" ? "Dead Stock" : alerts[selectedAlert].type === "stockout" ? "Stockout Risk" : "Low Activity"}
+                      <StatusBadge status={alerts[selectedAlert].type === "Dead-Stock" ? "Dead-Stock" : alerts[selectedAlert].type === "Stockout" ? "Danger" : "Warning"} showPulse>
+                        {alerts[selectedAlert].type === "Dead-Stock" ? "Dead Stock" : alerts[selectedAlert].type === "Stockout" ? "Stockout Risk" : "Low Activity"}
                       </StatusBadge>
                     </div>
                     <Separator />
@@ -288,7 +305,7 @@ export default function Inventory() {
                       <MapPin className="h-4 w-4 text-muted-foreground" />
                       <span className="text-sm">{alerts[selectedAlert].location}</span>
                     </div>
-                    <div className="grid grid-cols-2 gap-4 pt-3">
+                    <div className="grid grid-cols-2 gap-2 pt-3">
                       <div className="space-y-1">
                         <p className="text-xs text-muted-foreground">Distance from Plant</p>
                         <p className="text-sm font-medium">142 km</p>
@@ -357,36 +374,31 @@ export default function Inventory() {
                 {/* Action Buttons */}
                 <div className="flex gap-3">
                   <Button className="flex-1">Approve Reallocation</Button>
-                  <Button variant="outline" className="flex-1">Schedule Review</Button>
+                  <Button variant="outline" className="flex-1">
+                    Schedule Review
+                  </Button>
                 </div>
               </div>
             </>
           )}
-        </DrawerContent>
-      </Drawer>
+        </SheetContent>
+      </Sheet>
 
-      {/* Inventory Detail Drawer */}
-      <Drawer open={selectedInventory !== null} onOpenChange={(open) => !open && setSelectedInventory(null)}>
-        <DrawerContent className="max-h-[85vh]">
+      {/* Inventory Detail Sheet */}
+      <Sheet open={selectedInventory !== null} onOpenChange={(open) => !open && setSelectedInventory(null)}>
+        <SheetContent className="h-screen overflow-y-auto overflow-x-hidden w-full sm:max-w-2xl">
           {selectedInventory !== null && (
             <>
-              <DrawerHeader className="border-b border-border">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <DrawerTitle className="text-2xl">{inventoryData[selectedInventory].location}</DrawerTitle>
-                    <DrawerDescription className="capitalize">{inventoryData[selectedInventory].type} Facility</DrawerDescription>
-                  </div>
-                  <DrawerClose asChild>
-                    <Button variant="ghost" size="sm">
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </DrawerClose>
+              <SheetHeader className="border-b border-border">
+                <div className="space-y-2">
+                  <SheetTitle className="text-2xl">{inventoryData[selectedInventory].location}</SheetTitle>
+                  <SheetDescription className="capitalize">{inventoryData[selectedInventory].type} Facility</SheetDescription>
                 </div>
-              </DrawerHeader>
-              
-              <div className="p-6 space-y-6 overflow-y-auto">
+              </SheetHeader>
+
+              <div className="p-6 space-y-6 overflow-y-auto overflow-x-hidden">
                 {/* Stock Overview */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                   <Card className="">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-sm font-medium text-muted-foreground">Current Stock</CardTitle>
@@ -425,21 +437,23 @@ export default function Inventory() {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-muted-foreground">Current Status</span>
-                        <StatusBadge status={inventoryData[selectedInventory].status} showPulse={inventoryData[selectedInventory].status === "dead-stock" || inventoryData[selectedInventory].status === "danger"}>
-                          {inventoryData[selectedInventory].status === "dead-stock" ? "Dead Stock" : inventoryData[selectedInventory].status}
+                        <StatusBadge status={inventoryData[selectedInventory].status} showPulse={inventoryData[selectedInventory].status === "Dead-Stock" || inventoryData[selectedInventory].status === "Danger"}>
+                          {inventoryData[selectedInventory].status === "Dead-Stock" ? "Dead Stock" : inventoryData[selectedInventory].status}
                         </StatusBadge>
                       </div>
                       <Progress value={getStockPercentage(inventoryData[selectedInventory].stock, inventoryData[selectedInventory].capacity)} className="h-2" />
                     </div>
                     <Separator />
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
                         <p className="text-xs text-muted-foreground">Last Movement</p>
                         <p className="text-sm font-medium">{inventoryData[selectedInventory].lastMovement}</p>
                       </div>
                       <div className="space-y-1">
                         <p className="text-xs text-muted-foreground">Active Alerts</p>
-                        <p className="text-sm font-medium">{inventoryData[selectedInventory].alerts} alert{inventoryData[selectedInventory].alerts !== 1 ? 's' : ''}</p>
+                        <p className="text-sm font-medium">
+                          {inventoryData[selectedInventory].alerts} alert{inventoryData[selectedInventory].alerts !== 1 ? "s" : ""}
+                        </p>
                       </div>
                     </div>
                   </CardContent>
@@ -507,13 +521,15 @@ export default function Inventory() {
                 {/* Action Buttons */}
                 <div className="flex gap-3">
                   <Button className="flex-1">Request Transfer</Button>
-                  <Button variant="outline" className="flex-1">View on Map</Button>
+                  <Button variant="outline" className="flex-1">
+                    View on Map
+                  </Button>
                 </div>
               </div>
             </>
           )}
-        </DrawerContent>
-      </Drawer>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
