@@ -20,12 +20,7 @@ export default function Insights() {
     {
       role: "assistant",
       content: "Hello! I'm your AI supply chain assistant. I can help you analyze demand forecasts, optimize distribution routes, and identify inventory risks. What would you like to know?",
-      suggestions: [
-        "Why is Kecamatan X showing high demand next month?",
-        "Recommend redistribution from Warehouse B",
-        "Explain the dead-stock alert for Warehouse B",
-        "What's driving demand in Yogyakarta region?"
-      ],
+      suggestions: ["Why is Kecamatan X showing high demand next month?", "Recommend redistribution from Warehouse B", "Explain the dead-stock alert for Warehouse B", "What's driving demand in Yogyakarta region?"],
       timestamp: new Date(),
     },
   ]);
@@ -55,7 +50,7 @@ export default function Insights() {
     if (query.toLowerCase().includes("high demand") || query.toLowerCase().includes("kecamatan")) {
       return "Based on the CatBoost multivariate forecasting model, Kecamatan X shows elevated demand due to three key factors:\n\n1. **Seasonal patterns**: Rice planting season begins in 3 weeks\n2. **Weather forecast**: 15% above-average rainfall predicted\n3. **Historical trends**: Last year showed 18% demand spike in this period\n\nRecommended action: Increase stock allocation by 12% (approx. 2.1 tons) to meet projected demand of 19.4 tons.";
     }
-    
+
     if (query.toLowerCase().includes("warehouse b") || query.toLowerCase().includes("dead-stock")) {
       return "Warehouse B dead-stock analysis:\n\n**Issue**: 680 tons with no movement for 18 days indicates dead-stock risk.\n\n**Root cause**: Overstocking during low-demand period, regional demand shift to neighboring areas.\n\n**Recommended actions**:\n1. Transfer 250 tons to Warehouse A (cost: Rp 2.1M via Route B)\n2. Redistribute 150 tons to Kios network in high-demand areas\n3. Reduce next month's allocation by 40%\n\n**Cost savings**: Estimated Rp 8.5M in storage and opportunity costs.";
     }
@@ -79,151 +74,124 @@ export default function Insights() {
   ];
 
   return (
-    <div className="h-[calc(100vh-4rem)] p-6 flex gap-6 animate-fade-in">
-      {/* Main Chat Area */}
-      <Card className="flex-1 glass-panel flex flex-col">
-        <CardHeader className="border-b border-border">
-          <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
-            <CardTitle>AI Insights & Recommendations</CardTitle>
-          </div>
-          <CardDescription>
-            Conversational intelligence powered by supply chain analytics
-          </CardDescription>
-        </CardHeader>
+    <div className="space-y-2 md:space-y-6 p-2 md:p-6 animate-fade-in">
+      <div>
+        <h1 className="text-2xl md:text-3xl font-bold mb-2">AI Insights & Recommendations</h1>
+        <p className="text-sm md:text-base text-muted-foreground">Conversational intelligence powered by supply chain analytics</p>
+      </div>
 
-        <CardContent className="flex-1 flex flex-col p-0">
-          <ScrollArea className="flex-1 p-6">
-            <div className="space-y-6">
-              {messages.map((message, index) => (
-                <div
-                  key={index}
-                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-[80%] space-y-2 ${
-                      message.role === "user"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-card border border-border"
-                    } rounded-lg p-4`}
-                  >
-                    <div className="flex items-start gap-2">
-                      {message.role === "assistant" && (
-                        <Sparkles className="h-4 w-4 text-primary mt-0.5" />
-                      )}
-                      <div className="flex-1 space-y-2">
-                        <p className="text-sm whitespace-pre-line">{message.content}</p>
-                        {message.suggestions && (
-                          <div className="space-y-2 pt-2">
-                            <p className="text-xs text-muted-foreground">Suggested questions:</p>
-                            <div className="flex flex-wrap gap-2">
-                              {message.suggestions.map((suggestion, i) => (
-                                <Button
-                                  key={i}
-                                  variant="secondary"
-                                  size="sm"
-                                  className="text-xs"
-                                  onClick={() => handleSuggestionClick(suggestion)}
-                                >
-                                  {suggestion}
-                                </Button>
-                              ))}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-2 md:gap-6">
+        {/* Main Chat Area */}
+        <Card className="lg:col-span-3 glass-panel flex flex-col">
+          <CardHeader className="border-b border-border">
+            <CardDescription className="text-xs md:text-sm">Tip: Ask questions about your supply chain data!</CardDescription>
+          </CardHeader>
+
+          <CardContent className="flex-1 flex flex-col p-0">
+            <ScrollArea className="flex-1 p-3 md:p-6">
+              <div className="space-y-6">
+                {messages.map((message, index) => (
+                  <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+                    <div className={`max-w-[85%] md:max-w-[80%] space-y-2 ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-card border border-border"} rounded-lg p-3 md:p-4`}>
+                      <div className="flex items-start gap-2">
+                        {message.role === "assistant" && <Sparkles className="h-4 w-4 text-primary mt-0.5" />}
+                        <div className="flex-1 space-y-2">
+                          <p className="text-sm whitespace-pre-line">{message.content}</p>
+                          {message.suggestions && (
+                            <div className="space-y-2 pt-2">
+                              <p className="text-xs text-muted-foreground">Suggested questions:</p>
+                              <div className="flex flex-wrap gap-2">
+                                {message.suggestions.map((suggestion, i) => (
+                                  <Button key={i} variant="secondary" size="sm" className="text-xs" onClick={() => handleSuggestionClick(suggestion)}>
+                                    {suggestion}
+                                  </Button>
+                                ))}
+                              </div>
                             </div>
-                          </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between text-xs opacity-60">
+                        <span>
+                          {message.timestamp.toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                        {message.role === "assistant" && (
+                          <Badge variant="outline" className="text-xs">
+                            Source: Analytics Engine
+                          </Badge>
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center justify-between text-xs opacity-60">
-                      <span>
-                        {message.timestamp.toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                      {message.role === "assistant" && (
-                        <Badge variant="outline" className="text-xs">
-                          Source: Analytics Engine
-                        </Badge>
-                      )}
-                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
+                ))}
+              </div>
+            </ScrollArea>
 
-          <div className="p-4 border-t border-border">
-            <div className="flex gap-2">
-              <Input
-                placeholder="Ask about forecasts, routes, inventory..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleSend()}
-                className="flex-1"
-              />
-              <Button onClick={handleSend} disabled={!input.trim()}>
-                <Send className="h-4 w-4" />
+            <div className="p-3 md:p-4 border-t border-border">
+              <div className="flex gap-2">
+                <Input placeholder="Ask about forecasts, routes, inventory..." value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === "Enter" && handleSend()} className="flex-1" />
+                <Button onClick={handleSend} disabled={!input.trim()}>
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Actions Sidebar */}
+        <Card className="lg:col-span-1 glass-panel">
+          <CardHeader>
+            <CardTitle className="text-lg">Quick Actions</CardTitle>
+            <CardDescription className="text-xs md:text-sm">Jump to key insights</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {quickActions.map((action, index) => (
+              <Button key={index} variant="outline" className="w-full justify-start hover-glow" onClick={() => setInput(`Show me ${action.label.toLowerCase()}`)}>
+                <action.icon className={`h-4 w-4 mr-2 ${action.color}`} />
+                {action.label}
               </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+            ))}
+          </CardContent>
 
-      {/* Quick Actions Sidebar */}
-      <Card className="w-80 glass-panel">
-        <CardHeader>
-          <CardTitle className="text-lg">Quick Actions</CardTitle>
-          <CardDescription>Jump to key insights</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {quickActions.map((action, index) => (
-            <Button
-              key={index}
-              variant="outline"
-              className="w-full justify-start hover-glow"
-              onClick={() => setInput(`Show me ${action.label.toLowerCase()}`)}
-            >
-              <action.icon className={`h-4 w-4 mr-2 ${action.color}`} />
-              {action.label}
-            </Button>
-          ))}
-        </CardContent>
+          <CardHeader className="pt-0">
+            <CardTitle className="text-lg">Recent Insights</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Card className="border-l-4 border-l-primary">
+              <CardContent className="p-3 space-y-1">
+                <p className="text-sm font-medium">High Demand Alert</p>
+                <p className="text-xs text-muted-foreground">Kec. Bantul demand projected +18% next week</p>
+                <Badge variant="outline" className="text-xs">
+                  2 hours ago
+                </Badge>
+              </CardContent>
+            </Card>
 
-        <CardHeader className="pt-0">
-          <CardTitle className="text-lg">Recent Insights</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <Card className="border-l-4 border-l-primary">
-            <CardContent className="p-3 space-y-1">
-              <p className="text-sm font-medium">High Demand Alert</p>
-              <p className="text-xs text-muted-foreground">
-                Kec. Bantul demand projected +18% next week
-              </p>
-              <Badge variant="outline" className="text-xs">2 hours ago</Badge>
-            </CardContent>
-          </Card>
+            <Card className="border-l-4 border-l-warning">
+              <CardContent className="p-3 space-y-1">
+                <p className="text-sm font-medium">Dead-Stock Detection</p>
+                <p className="text-xs text-muted-foreground">Warehouse B: 680 tons, 18 days idle</p>
+                <Badge variant="outline" className="text-xs">
+                  5 hours ago
+                </Badge>
+              </CardContent>
+            </Card>
 
-          <Card className="border-l-4 border-l-warning">
-            <CardContent className="p-3 space-y-1">
-              <p className="text-sm font-medium">Dead-Stock Detection</p>
-              <p className="text-xs text-muted-foreground">
-                Warehouse B: 680 tons, 18 days idle
-              </p>
-              <Badge variant="outline" className="text-xs">5 hours ago</Badge>
-            </CardContent>
-          </Card>
-
-          <Card className="border-l-4 border-l-secondary">
-            <CardContent className="p-3 space-y-1">
-              <p className="text-sm font-medium">Route Optimization</p>
-              <p className="text-xs text-muted-foreground">
-                New route saves 12% fuel cost
-              </p>
-              <Badge variant="outline" className="text-xs">1 day ago</Badge>
-            </CardContent>
-          </Card>
-        </CardContent>
-      </Card>
+            <Card className="border-l-4 border-l-secondary">
+              <CardContent className="p-3 space-y-1">
+                <p className="text-sm font-medium">Route Optimization</p>
+                <p className="text-xs text-muted-foreground">New route saves 12% fuel cost</p>
+                <Badge variant="outline" className="text-xs">
+                  1 day ago
+                </Badge>
+              </CardContent>
+            </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

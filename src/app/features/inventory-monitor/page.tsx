@@ -256,24 +256,17 @@ export default function Inventory() {
 
       {/* Alert Detail Sheet */}
       <Sheet open={selectedAlert !== null} onOpenChange={(open) => !open && setSelectedAlert(null)}>
-        <SheetContent className="max-h-[85vh] overflow-y-auto">
+        <SheetContent className="h-screen overflow-y-auto overflow-x-hidden w-full sm:max-w-2xl">
           {selectedAlert !== null && (
             <>
               <SheetHeader className="border-b border-border">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <SheetTitle className="text-2xl">Alert Details</SheetTitle>
-                    <SheetDescription>{alerts[selectedAlert].location}</SheetDescription>
-                  </div>
-                  <SheetClose asChild>
-                    <Button variant="ghost" size="sm">
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </SheetClose>
+                <div className="space-y-2">
+                  <SheetTitle className="text-2xl">Alert Details</SheetTitle>
+                  <SheetDescription>{alerts[selectedAlert].location}</SheetDescription>
                 </div>
               </SheetHeader>
 
-              <div className="p-6 space-y-6 overflow-y-auto">
+              <div className="p-6 space-y-6 overflow-y-auto overflow-x-hidden">
                 {/* Alert Status */}
                 <Card className="">
                   <CardHeader>
@@ -390,24 +383,17 @@ export default function Inventory() {
 
       {/* Inventory Detail Sheet */}
       <Sheet open={selectedInventory !== null} onOpenChange={(open) => !open && setSelectedInventory(null)}>
-        <SheetContent className="max-h-[85vh] overflow-y-auto">
+        <SheetContent className="h-screen overflow-y-auto overflow-x-hidden w-full sm:max-w-2xl">
           {selectedInventory !== null && (
             <>
               <SheetHeader className="border-b border-border">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <SheetTitle className="text-2xl">{inventoryData[selectedInventory].location}</SheetTitle>
-                    <SheetDescription className="capitalize">{inventoryData[selectedInventory].type} Facility</SheetDescription>
-                  </div>
-                  <SheetClose asChild>
-                    <Button variant="ghost" size="sm">
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </SheetClose>
+                <div className="space-y-2">
+                  <SheetTitle className="text-2xl">{inventoryData[selectedInventory].location}</SheetTitle>
+                  <SheetDescription className="capitalize">{inventoryData[selectedInventory].type} Facility</SheetDescription>
                 </div>
               </SheetHeader>
 
-              <div className="p-6 space-y-6 overflow-y-auto">
+              <div className="p-6 space-y-6 overflow-y-auto overflow-x-hidden">
                 {/* Stock Overview */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                   <Card className="">
