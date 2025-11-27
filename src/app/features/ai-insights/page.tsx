@@ -41,12 +41,13 @@ export default function Insights() {
     initializeSession();
   }, []);
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+  const handleSend = async (messageText?: string) => {
+    const textToSend = messageText || input;
+    if (!textToSend.trim() || isLoading) return;
 
     const userMessage: Message = {
       role: "user",
-      content: input,
+      content: textToSend,
       timestamp: new Date(),
     };
 
@@ -63,7 +64,7 @@ export default function Insights() {
 
     try {
       const request: AIInsightRequest = {
-        query: input,
+        query: textToSend,
         crop_type: "rice",
         region: "jawa-barat",
         season: "wet-season",
@@ -104,12 +105,12 @@ export default function Insights() {
     }
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setInput(suggestion);
+  const handleSuggestionClick = async (suggestion: string) => {
+    await handleSend(suggestion);
   };
 
-  const handleQuickActionClick = (action: string) => {
-    setInput(action);
+  const handleQuickActionClick = async (action: string) => {
+    await handleSend(action);
   };
 
   return (

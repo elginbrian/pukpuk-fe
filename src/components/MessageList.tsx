@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { ScrollArea } from "./ui/scroll-area";
 import { ChatMessage } from "./ChatMessage";
 
@@ -17,8 +18,19 @@ interface MessageListProps {
 }
 
 export function MessageList({ messages, onSuggestionClick }: MessageListProps) {
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      const scrollContainer = scrollAreaRef.current.querySelector("[data-radix-scroll-area-viewport]");
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }
+    }
+  }, [messages]);
+
   return (
-    <ScrollArea className="flex-1 p-3 md:p-6">
+    <ScrollArea ref={scrollAreaRef} className="h-[400px] md:h-[500px] p-3 md:p-6">
       <div className="space-y-6">
         {messages.map((message, index) => (
           <ChatMessage key={index} message={message} onSuggestionClick={onSuggestionClick} />
