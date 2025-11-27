@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { useAlerts } from "../../../context/AlertContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/table";
 import { StatusBadge } from "../../../components/StatusBadge";
@@ -7,11 +9,10 @@ import { Button } from "../../../components/ui/button";
 import { AlertCircle, ArrowRight, Package, TrendingDown, Warehouse, X, Calendar, TrendingUp, MapPin, Truck } from "lucide-react";
 import { Progress } from "../../../components/ui/progress";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerClose } from "../../../components/ui/drawer";
-import { useState } from "react";
 import { Separator } from "../../../components/ui/separator";
 
 export default function Inventory() {
-  const [selectedAlert, setSelectedAlert] = useState<number | null>(null);
+  const { alerts, selectedAlert, setSelectedAlert } = useAlerts();
   const [selectedInventory, setSelectedInventory] = useState<number | null>(null);
 
   const inventoryData = [
@@ -59,27 +60,6 @@ export default function Inventory() {
       status: "Healthy" as const,
       lastMovement: "3 hours ago",
       alerts: 0,
-    },
-  ];
-
-  const alerts = [
-    {
-      type: "Dead-Stock",
-      location: "Warehouse B - Surabaya",
-      message: "18 days no movement detected",
-      action: "Reallocation recommended",
-    },
-    {
-      type: "Stockout",
-      location: "Kios Bantul",
-      message: "Stock critically low (22.5% capacity)",
-      action: "Emergency refill required",
-    },
-    {
-      type: "Slow-Movement",
-      location: "Warehouse A - Bandung",
-      message: "5 days since last movement",
-      action: "Monitor for dead-stock risk",
     },
   ];
 

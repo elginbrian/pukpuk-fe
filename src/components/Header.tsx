@@ -1,15 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Moon, Sun, Bell } from "lucide-react";
+import { Moon, Sun} from "lucide-react";
 import { SidebarTrigger } from "./ui/sidebar";
 import { useTheme } from "next-themes";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
+import { NotificationDropdown } from "./ui/notification-dropdown";
+import { useAlerts } from "../context/AlertContext";  
 
 export function Header() {
   const { setTheme, theme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { alerts, setSelectedAlert } = useAlerts();
 
   useEffect(() => {
     setMounted(true);
@@ -26,10 +29,10 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="relative">
-            <Bell className="h-4 w-4" />
-            <span className="absolute top-1 right-1 h-2 w-2 bg-destructive rounded-full animate-pulse-glow" />
-          </Button>
+          <NotificationDropdown 
+            alerts={alerts} 
+            onAlertClick={(index) => setSelectedAlert(index)} 
+          />
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
