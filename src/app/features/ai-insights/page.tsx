@@ -1,33 +1,48 @@
 "use client";
 
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
-import { Button } from "../../../components/ui/button";
-import { Input } from "../../../components/ui/input";
-import { ScrollArea } from "../../../components/ui/scroll-area";
-import { Sparkles, Send, TrendingUp, Package, MapPin, AlertTriangle } from "lucide-react";
-import { Badge } from "../../../components/ui/badge";
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardDescription, CardHeader } from "../../../components/ui/card";
+import { MessageList, ChatInput, QuickActions, RecentInsights } from "../../../components";
+import { apiService } from "../../../services/api";
+import { AIInsightRequest } from "../../../types";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
   suggestions?: string[];
   timestamp: Date;
+  isLoading?: boolean;
 }
 
 export default function Insights() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hello! I'm your AI supply chain assistant. I can help you analyze demand forecasts, optimize distribution routes, and identify inventory risks. What would you like to know?",
-      suggestions: ["Why is Kecamatan X showing high demand next month?", "Recommend redistribution from Warehouse B", "Explain the dead-stock alert for Warehouse B", "What's driving demand in Yogyakarta region?"],
+      content:
+        "Hello! I'm your AI assistant for supply chain intelligence. I can help you with demand forecasting, inventory optimization, route planning, and data analysis. I have access to your current supply chain data and can provide insights based on real metrics and forecasts. What would you like to explore?",
+      suggestions: ["What's the current demand trend?", "Show me inventory optimization suggestions", "Analyze route efficiency", "Check forecasting accuracy"],
       timestamp: new Date(),
     },
   ]);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
 
-  const handleSend = () => {
-    if (!input.trim()) return;
+  useEffect(() => {
+    const initializeSession = async () => {
+      try {
+        const session = await apiService.createChatSession();
+        setSessionId(session.session_id);
+      } catch (error) {
+        console.error("Failed to create chat session:", error);
+      }
+    };
+
+    initializeSession();
+  }, []);
+
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) return;
 
     const userMessage: Message = {
       role: "user",
@@ -35,43 +50,67 @@ export default function Insights() {
       timestamp: new Date(),
     };
 
-    // Simulate AI response
-    const aiResponse: Message = {
+    const loadingMessage: Message = {
       role: "assistant",
-      content: generateMockResponse(input),
+      content: "",
       timestamp: new Date(),
+      isLoading: true,
     };
 
-    setMessages([...messages, userMessage, aiResponse]);
+    setMessages((prev) => [...prev, userMessage, loadingMessage]);
     setInput("");
-  };
+    setIsLoading(true);
 
-  const generateMockResponse = (query: string): string => {
-    if (query.toLowerCase().includes("high demand") || query.toLowerCase().includes("kecamatan")) {
-      return "Based on the CatBoost multivariate forecasting model, Kecamatan X shows elevated demand due to three key factors:\n\n1. **Seasonal patterns**: Rice planting season begins in 3 weeks\n2. **Weather forecast**: 15% above-average rainfall predicted\n3. **Historical trends**: Last year showed 18% demand spike in this period\n\nRecommended action: Increase stock allocation by 12% (approx. 2.1 tons) to meet projected demand of 19.4 tons.";
+    try {
+      const request: AIInsightRequest = {
+        query: input,
+        crop_type: "rice",
+        region: "jawa-barat",
+        season: "wet-season",
+        session_id: sessionId || undefined,
+      };
+
+      const response = await apiService.generateAIInsight(request);
+
+      // Replace loading message with actual response
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.isLoading
+            ? {
+                role: "assistant",
+                content: response.response,
+                suggestions: response.suggestions,
+                timestamp: new Date(),
+              }
+            : msg
+        )
+      );
+    } catch (error) {
+      console.error("Error generating AI insight:", error);
+      // Replace loading message with error message
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.isLoading
+            ? {
+                role: "assistant",
+                content: "Sorry, I encountered an error while processing your request. Please try again.",
+                timestamp: new Date(),
+              }
+            : msg
+        )
+      );
+    } finally {
+      setIsLoading(false);
     }
-
-    if (query.toLowerCase().includes("warehouse b") || query.toLowerCase().includes("dead-stock")) {
-      return "Warehouse B dead-stock analysis:\n\n**Issue**: 680 tons with no movement for 18 days indicates dead-stock risk.\n\n**Root cause**: Overstocking during low-demand period, regional demand shift to neighboring areas.\n\n**Recommended actions**:\n1. Transfer 250 tons to Warehouse A (cost: Rp 2.1M via Route B)\n2. Redistribute 150 tons to Kios network in high-demand areas\n3. Reduce next month's allocation by 40%\n\n**Cost savings**: Estimated Rp 8.5M in storage and opportunity costs.";
-    }
-
-    if (query.toLowerCase().includes("redistribution") || query.toLowerCase().includes("recommend")) {
-      return "Optimal redistribution plan from Warehouse B:\n\n**Route Analysis** (via cost optimization engine):\n• **Route B-1**: Warehouse B → Warehouse A (250 tons)\n  - Distance: 180 km\n  - Estimated fuel: 85L\n  - Cost: Rp 2.1M\n  - CO₂: 225 kg\n\n• **Route B-2**: Warehouse B → Kios Network (150 tons)\n  - 6 delivery points\n  - Total distance: 240 km\n  - Cost: Rp 3.2M\n\n**Total cost**: Rp 5.3M | **Time**: 2-3 days | **Risk mitigation**: High";
-    }
-
-    return "I've analyzed your query using the latest supply chain data. Could you provide more specific details about what aspect you'd like me to focus on? I can help with demand forecasting, route optimization, inventory analysis, or risk detection.";
   };
 
   const handleSuggestionClick = (suggestion: string) => {
     setInput(suggestion);
   };
 
-  const quickActions = [
-    { icon: TrendingUp, label: "Forecast Summary", color: "text-primary" },
-    { icon: Package, label: "Inventory Status", color: "text-secondary" },
-    { icon: MapPin, label: "Route Analysis", color: "text-accent" },
-    { icon: AlertTriangle, label: "Risk Alerts", color: "text-warning" },
-  ];
+  const handleQuickActionClick = (action: string) => {
+    setInput(action);
+  };
 
   return (
     <div className="space-y-2 md:space-y-6 p-2 md:p-6 animate-fade-in">
@@ -88,109 +127,18 @@ export default function Insights() {
           </CardHeader>
 
           <CardContent className="flex-1 flex flex-col p-0">
-            <ScrollArea className="flex-1 p-3 md:p-6">
-              <div className="space-y-6">
-                {messages.map((message, index) => (
-                  <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
-                    <div className={`max-w-[85%] md:max-w-[80%] space-y-2 ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-card border border-border"} rounded-lg p-3 md:p-4`}>
-                      <div className="flex items-start gap-2">
-                        {message.role === "assistant" && <Sparkles className="h-4 w-4 text-primary mt-0.5" />}
-                        <div className="flex-1 space-y-2">
-                          <p className="text-sm whitespace-pre-line">{message.content}</p>
-                          {message.suggestions && (
-                            <div className="space-y-2 pt-2">
-                              <p className="text-xs text-muted-foreground">Suggested questions:</p>
-                              <div className="flex flex-wrap gap-2">
-                                {message.suggestions.map((suggestion, i) => (
-                                  <Button key={i} variant="secondary" size="sm" className="text-xs" onClick={() => handleSuggestionClick(suggestion)}>
-                                    {suggestion}
-                                  </Button>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between text-xs opacity-60">
-                        <span>
-                          {message.timestamp.toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </span>
-                        {message.role === "assistant" && (
-                          <Badge variant="outline" className="text-xs">
-                            Source: Analytics Engine
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </ScrollArea>
-
-            <div className="p-3 md:p-4 border-t border-border">
-              <div className="flex gap-2">
-                <Input placeholder="Ask about forecasts, routes, inventory..." value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === "Enter" && handleSend()} className="flex-1" />
-                <Button onClick={handleSend} disabled={!input.trim()}>
-                  <Send className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
+            <MessageList messages={messages} onSuggestionClick={handleSuggestionClick} />
+            <ChatInput input={input} onInputChange={setInput} onSend={handleSend} isLoading={isLoading} />
           </CardContent>
         </Card>
 
         {/* Quick Actions Sidebar */}
-        <Card className="lg:col-span-1 glass-panel">
-          <CardHeader>
-            <CardTitle className="text-lg">Quick Actions</CardTitle>
-            <CardDescription className="text-xs md:text-sm">Jump to key insights</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {quickActions.map((action, index) => (
-              <Button key={index} variant="outline" className="w-full justify-start hover-glow" onClick={() => setInput(`Show me ${action.label.toLowerCase()}`)}>
-                <action.icon className={`h-4 w-4 mr-2 ${action.color}`} />
-                {action.label}
-              </Button>
-            ))}
-          </CardContent>
-
-          <CardHeader className="pt-0">
-            <CardTitle className="text-lg">Recent Insights</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Card className="border-l-4 border-l-primary">
-              <CardContent className="p-3 space-y-1">
-                <p className="text-sm font-medium">High Demand Alert</p>
-                <p className="text-xs text-muted-foreground">Kec. Bantul demand projected +18% next week</p>
-                <Badge variant="outline" className="text-xs">
-                  2 hours ago
-                </Badge>
-              </CardContent>
-            </Card>
-
-            <Card className="border-l-4 border-l-warning">
-              <CardContent className="p-3 space-y-1">
-                <p className="text-sm font-medium">Dead-Stock Detection</p>
-                <p className="text-xs text-muted-foreground">Warehouse B: 680 tons, 18 days idle</p>
-                <Badge variant="outline" className="text-xs">
-                  5 hours ago
-                </Badge>
-              </CardContent>
-            </Card>
-
-            <Card className="border-l-4 border-l-secondary">
-              <CardContent className="p-3 space-y-1">
-                <p className="text-sm font-medium">Route Optimization</p>
-                <p className="text-xs text-muted-foreground">New route saves 12% fuel cost</p>
-                <Badge variant="outline" className="text-xs">
-                  1 day ago
-                </Badge>
-              </CardContent>
-            </Card>
-          </CardContent>
-        </Card>
+        <div className="space-y-4">
+          <QuickActions onActionClick={handleQuickActionClick} />
+          <Card className="glass-panel">
+            <RecentInsights />
+          </Card>
+        </div>
       </div>
     </div>
   );
