@@ -28,13 +28,13 @@ export default function Heatmap() {
   ];
 
   return (
-    <div className="space-y-6 p-6 animate-fade-in">
+    <div className="space-y-2 md:space-y-6 p-2 md:p-6 animate-fade-in">
       <div>
-        <h1 className="text-3xl font-bold mb-2">Multi-Scale Demand Heatmap</h1>
-        <p className="text-muted-foreground">Visualize fertilizer demand across territorial levels with AI-powered forecasting</p>
+        <h1 className="text-2xl md:text-3xl font-bold mb-2">Multi-Scale Demand Heatmap</h1>
+        <p className="text-sm md:text-base text-muted-foreground">Visualize fertilizer demand across territorial levels with AI-powered forecasting</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-2 md:gap-6">
         {/* Control Panel */}
         <Card className="lg:col-span-1 glass-panel">
           <CardHeader>
