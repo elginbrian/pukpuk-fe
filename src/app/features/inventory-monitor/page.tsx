@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { useAlerts } from "../../../context/AlertContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/table";
 import { StatusBadge } from "../../../components/StatusBadge";
@@ -7,11 +9,10 @@ import { Button } from "../../../components/ui/button";
 import { AlertCircle, ArrowRight, Package, TrendingDown, Warehouse, X, Calendar, TrendingUp, MapPin, Truck } from "lucide-react";
 import { Progress } from "../../../components/ui/progress";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "../../../components/ui/sheet";
-import { useState } from "react";
 import { Separator } from "../../../components/ui/separator";
 
 export default function Inventory() {
-  const [selectedAlert, setSelectedAlert] = useState<number | null>(null);
+  const { alerts, selectedAlert, setSelectedAlert } = useAlerts();
   const [selectedInventory, setSelectedInventory] = useState<number | null>(null);
 
   const inventoryData = [
@@ -20,7 +21,7 @@ export default function Inventory() {
       type: "plant",
       stock: 1250,
       capacity: 2000,
-      status: "healthy" as const,
+      status: "Healthy" as const,
       lastMovement: "2 hours ago",
       alerts: 0,
     },
@@ -29,7 +30,7 @@ export default function Inventory() {
       type: "warehouse",
       stock: 450,
       capacity: 800,
-      status: "warning" as const,
+      status: "Warning" as const,
       lastMovement: "5 days ago",
       alerts: 1,
     },
@@ -38,7 +39,7 @@ export default function Inventory() {
       type: "warehouse",
       stock: 680,
       capacity: 1000,
-      status: "dead-stock" as const,
+      status: "Dead-Stock" as const,
       lastMovement: "18 days ago",
       alerts: 2,
     },
@@ -47,7 +48,7 @@ export default function Inventory() {
       type: "kios",
       stock: 45,
       capacity: 200,
-      status: "danger" as const,
+      status: "Danger" as const,
       lastMovement: "1 hour ago",
       alerts: 1,
     },
@@ -56,30 +57,9 @@ export default function Inventory() {
       type: "kios",
       stock: 180,
       capacity: 200,
-      status: "healthy" as const,
+      status: "Healthy" as const,
       lastMovement: "3 hours ago",
       alerts: 0,
-    },
-  ];
-
-  const alerts = [
-    {
-      type: "dead-stock",
-      location: "Warehouse B - Surabaya",
-      message: "18 days no movement detected",
-      action: "Reallocation recommended",
-    },
-    {
-      type: "stockout",
-      location: "Kios Bantul",
-      message: "Stock critically low (22.5% capacity)",
-      action: "Emergency refill required",
-    },
-    {
-      type: "slow-movement",
-      location: "Warehouse A - Bandung",
-      message: "5 days since last movement",
-      action: "Monitor for dead-stock risk",
     },
   ];
 
@@ -144,17 +124,17 @@ export default function Inventory() {
           </div>
           <CardDescription>Immediate actions required</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="grid grid-cols-2 md:grid-cols-1 gap-3">
           {alerts.map((alert, index) => (
             <div key={index} className="flex items-start justify-between p-4 rounded-lg border border-border bg-background hover-glow">
               <div className="space-y-1 flex-1">
                 <div className="flex items-center gap-2">
-                  <StatusBadge status={alert.type === "dead-stock" ? "dead-stock" : alert.type === "stockout" ? "danger" : "warning"} showPulse>
-                    {alert.type === "dead-stock" ? "Dead Stock" : alert.type === "stockout" ? "Stockout Risk" : "Low Activity"}
+                  <StatusBadge status={alert.type === "Dead-Stock" ? "Dead-Stock" : alert.type === "Stockout" ? "Danger" : "Warning"} showPulse>
+                    {alert.type === "Dead-Stock" ? "Dead Stock" : alert.type === "Stockout" ? "Stockout Risk" : "Low Activity"}
                   </StatusBadge>
-                  <span className="font-medium">{alert.location}</span>
+                  <span className="text-xs md:text-md font-medium">{alert.location}</span>
                 </div>
-                <p className="text-sm text-muted-foreground">{alert.message}</p>
+                <p className="text-xs md:text-sm text-muted-foreground">{alert.message}</p>
                 <p className="text-sm text-primary font-medium">{alert.action}</p>
               </div>
               <Button variant="ghost" size="sm" onClick={() => setSelectedAlert(index)}>
@@ -168,8 +148,8 @@ export default function Inventory() {
       {/* Inventory Overview */}
       <Card>
         <CardHeader>
-          <CardTitle>Inventory Overview</CardTitle>
-          <CardDescription>Stock levels across all locations</CardDescription>
+          <CardTitle className="text-lg md:text-xl">Inventory Overview</CardTitle>
+          <CardDescription className="text-xs md:text-sm">Stock levels across all locations</CardDescription>
         </CardHeader>
         <CardContent>
           {/* Mobile Card Layout */}
@@ -189,8 +169,9 @@ export default function Inventory() {
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-sm text-muted-foreground capitalize">{item.type}</span>
-                          <StatusBadge status={item.status} showPulse={item.status === "dead-stock" || item.status === "danger"}>
-                            {item.status === "dead-stock" ? "Dead Stock" : item.status}
+                          <StatusBadge status={item.status} showPulse={item.status === "Dead-Stock" || item.status === "Danger"}>
+                            {item.status === "Dead-Stock" ? "Dead Stock" : item.status}
+
                           </StatusBadge>
                         </div>
                       </div>
@@ -255,8 +236,9 @@ export default function Inventory() {
                       </TableCell>
                       <TableCell>{item.capacity} tons</TableCell>
                       <TableCell>
-                        <StatusBadge status={item.status} showPulse={item.status === "dead-stock" || item.status === "danger"}>
-                          {item.status === "dead-stock" ? "Dead Stock" : item.status}
+                        <StatusBadge status={item.status} showPulse={item.status === "Dead-Stock" || item.status === "Danger"}>
+                          {item.status === "Dead-Stock" ? "Dead Stock" : item.status}
+
                         </StatusBadge>
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">{item.lastMovement}</TableCell>
@@ -276,24 +258,18 @@ export default function Inventory() {
 
       {/* Alert Detail Sheet */}
       <Sheet open={selectedAlert !== null} onOpenChange={(open) => !open && setSelectedAlert(null)}>
-        <SheetContent className="max-h-[85vh] overflow-y-auto">
+        <SheetContent className="h-screen overflow-y-auto overflow-x-hidden w-full sm:max-w-2xl">
           {selectedAlert !== null && (
             <>
               <SheetHeader className="border-b border-border">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <SheetTitle className="text-2xl">Alert Details</SheetTitle>
-                    <SheetDescription>{alerts[selectedAlert].location}</SheetDescription>
-                  </div>
-                  <SheetClose asChild>
-                    <Button variant="ghost" size="sm">
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </SheetClose>
+                <div className="space-y-2">
+                  <SheetTitle className="text-2xl">Alert Details</SheetTitle>
+                  <SheetDescription>{alerts[selectedAlert].location}</SheetDescription>
+=
                 </div>
               </SheetHeader>
 
-              <div className="p-6 space-y-6 overflow-y-auto">
+              <div className="p-6 space-y-6 overflow-y-auto overflow-x-hidden">
                 {/* Alert Status */}
                 <Card className="">
                   <CardHeader>
@@ -302,8 +278,8 @@ export default function Inventory() {
                   <CardContent className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Alert Type</span>
-                      <StatusBadge status={alerts[selectedAlert].type === "dead-stock" ? "dead-stock" : alerts[selectedAlert].type === "stockout" ? "danger" : "warning"} showPulse>
-                        {alerts[selectedAlert].type === "dead-stock" ? "Dead Stock" : alerts[selectedAlert].type === "stockout" ? "Stockout Risk" : "Low Activity"}
+                      <StatusBadge status={alerts[selectedAlert].type === "Dead-Stock" ? "Dead-Stock" : alerts[selectedAlert].type === "Stockout" ? "Danger" : "Warning"} showPulse>
+                        {alerts[selectedAlert].type === "Dead-Stock" ? "Dead Stock" : alerts[selectedAlert].type === "Stockout" ? "Stockout Risk" : "Low Activity"}
                       </StatusBadge>
                     </div>
                     <Separator />
@@ -410,24 +386,17 @@ export default function Inventory() {
 
       {/* Inventory Detail Sheet */}
       <Sheet open={selectedInventory !== null} onOpenChange={(open) => !open && setSelectedInventory(null)}>
-        <SheetContent className="max-h-[85vh] overflow-y-auto">
+        <SheetContent className="h-screen overflow-y-auto overflow-x-hidden w-full sm:max-w-2xl">
           {selectedInventory !== null && (
             <>
               <SheetHeader className="border-b border-border">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <SheetTitle className="text-2xl">{inventoryData[selectedInventory].location}</SheetTitle>
-                    <SheetDescription className="capitalize">{inventoryData[selectedInventory].type} Facility</SheetDescription>
-                  </div>
-                  <SheetClose asChild>
-                    <Button variant="ghost" size="sm">
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </SheetClose>
+                <div className="space-y-2">
+                  <SheetTitle className="text-2xl">{inventoryData[selectedInventory].location}</SheetTitle>
+                  <SheetDescription className="capitalize">{inventoryData[selectedInventory].type} Facility</SheetDescription>
                 </div>
               </SheetHeader>
 
-              <div className="p-6 space-y-6 overflow-y-auto">
+              <div className="p-6 space-y-6 overflow-y-auto overflow-x-hidden">
                 {/* Stock Overview */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                   <Card className="">
@@ -468,8 +437,8 @@ export default function Inventory() {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-muted-foreground">Current Status</span>
-                        <StatusBadge status={inventoryData[selectedInventory].status} showPulse={inventoryData[selectedInventory].status === "dead-stock" || inventoryData[selectedInventory].status === "danger"}>
-                          {inventoryData[selectedInventory].status === "dead-stock" ? "Dead Stock" : inventoryData[selectedInventory].status}
+                        <StatusBadge status={inventoryData[selectedInventory].status} showPulse={inventoryData[selectedInventory].status === "Dead-Stock" || inventoryData[selectedInventory].status === "Danger"}>
+                          {inventoryData[selectedInventory].status === "Dead-Stock" ? "Dead Stock" : inventoryData[selectedInventory].status}
                         </StatusBadge>
                       </div>
                       <Progress value={getStockPercentage(inventoryData[selectedInventory].stock, inventoryData[selectedInventory].capacity)} className="h-2" />

@@ -5,6 +5,7 @@ import { Providers } from "./providers";
 import { SidebarProvider, SidebarInset } from "../components/ui/sidebar";
 import { AppSidebar } from "../components/AppSidebar";
 import { Header } from "../components/Header";
+import { AlertProvider } from "../context/AlertContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,13 +31,15 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
-          <SidebarProvider>
-            <AppSidebar />
-            <SidebarInset className="flex flex-col">
-              <Header />
-              <main className="flex-1 p-6 overflow-auto">{children}</main>
-            </SidebarInset>
-          </SidebarProvider>
+          <AlertProvider>
+            <SidebarProvider>
+              <AppSidebar />
+              <SidebarInset className="flex flex-col">
+                <Header />
+                <main className="flex-1 p-6 overflow-auto">{children}</main>
+              </SidebarInset>
+            </SidebarProvider>
+          </AlertProvider>
         </Providers>
       </body>
     </html>
