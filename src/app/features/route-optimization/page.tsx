@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
@@ -10,7 +11,27 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui
 import { Badge } from "../../../components/ui/badge";
 import { Navigation, Fuel, DollarSign, Leaf, MapPin, Truck, Send, Clock, TrendingDown, Zap } from "lucide-react";
 
-// Mock route data
+// Dynamically import RouteMap to avoid SSR issues with Leaflet
+const RouteMap = dynamic(() => import("../../../components/RouteMap"), {
+  ssr: false,
+  loading: () => (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        minHeight: 400,
+        borderRadius: '0.5rem',
+        backgroundColor: '#f3f4f6',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
+      <div className="text-muted-foreground">Loading map...</div>
+    </div>
+  )
+});
+
 const routeOptions = {
   fastest: {
     distance: 245,
@@ -42,6 +63,8 @@ const Routing = () => {
   const [selectedRoute, setSelectedRoute] = useState<"fastest" | "cheapest" | "greenest">("fastest");
   const [vehicleType, setVehicleType] = useState("truck-medium");
   const [loadCapacity, setLoadCapacity] = useState("8");
+  const [origin, setOrigin] = useState("plant-a");
+  const [destination, setDestination] = useState("kios-garut");
 
   const currentRoute = routeOptions[selectedRoute];
 
@@ -74,7 +97,7 @@ const Routing = () => {
                   <MapPin className="h-4 w-4 text-primary" />
                   Origin
                 </Label>
-                <Select defaultValue="plant-a">
+                <Select value={origin} onValueChange={setOrigin}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -111,7 +134,7 @@ const Routing = () => {
                   <MapPin className="h-4 w-4 text-success" />
                   Final Destination
                 </Label>
-                <Select defaultValue="kios-garut">
+                <Select value={destination} onValueChange={setDestination}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -184,60 +207,8 @@ const Routing = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="lg:flex-1 lg:flex lg:flex-col">
-              {/* Map Placeholder with Route Lines */}
-              <div className="relative w-full h-[400px] lg:h-full lg:min-h-0 lg:flex-1 rounded-lg overflow-hidden bg-gradient-to-br from-navy-deep to-muted/20">
-                {/* Simulated Map Background */}
-                <div className="absolute inset-0 opacity-10">
-                  <div className="absolute top-0 left-0 right-0 h-px bg-border animate-pulse" style={{ top: "25%" }} />
-                  <div className="absolute top-0 left-0 right-0 h-px bg-border animate-pulse" style={{ top: "50%" }} />
-                  <div className="absolute top-0 left-0 right-0 h-px bg-border animate-pulse" style={{ top: "75%" }} />
-                  <div className="absolute top-0 bottom-0 left-0 w-px bg-border animate-pulse" style={{ left: "25%" }} />
-                  <div className="absolute top-0 bottom-0 left-0 w-px bg-border animate-pulse" style={{ left: "50%" }} />
-                  <div className="absolute top-0 bottom-0 left-0 w-px bg-border animate-pulse" style={{ left: "75%" }} />
-                </div>
-
-                {/* Route Points */}
-                <div className="absolute top-[20%] left-[15%] flex flex-col items-center gap-1 z-10">
-                  <div className="w-4 h-4 rounded-full bg-primary animate-pulse-glow shadow-lg" />
-                  <Badge className="text-xs bg-background/90 backdrop-blur">Plant A</Badge>
-                </div>
-
-                <div className="absolute top-[40%] left-[40%] flex flex-col items-center gap-1 z-10">
-                  <div className="w-3 h-3 rounded-full bg-info shadow-lg" />
-                  <Badge variant="outline" className="text-xs bg-background/90 backdrop-blur">
-                    Warehouse B
-                  </Badge>
-                </div>
-
-                <div className="absolute top-[60%] left-[65%] flex flex-col items-center gap-1 z-10">
-                  <div className="w-3 h-3 rounded-full bg-info shadow-lg" />
-                  <Badge variant="outline" className="text-xs bg-background/90 backdrop-blur">
-                    Kios Bandung
-                  </Badge>
-                </div>
-
-                <div className="absolute top-[75%] left-[85%] flex flex-col items-center gap-1 z-10">
-                  <div className="w-4 h-4 rounded-full bg-success animate-pulse-glow shadow-lg" />
-                  <Badge className="text-xs bg-background/90 backdrop-blur">Kios Garut</Badge>
-                </div>
-
-                {/* Route Line Visualization */}
-                <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                  <defs>
-                    <linearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.8" />
-                      <stop offset="100%" stopColor="hsl(var(--success))" stopOpacity="0.8" />
-                    </linearGradient>
-                  </defs>
-                  <path d="M 15% 20% Q 30% 30%, 40% 40% T 65% 60% T 85% 75%" stroke="url(#routeGradient)" strokeWidth="3" fill="none" strokeDasharray="8 4" className="animate-pulse" />
-                </svg>
-
-                {/* Floating Info Card */}
-                <div className="absolute top-4 right-4 p-3 max-w-[200px]">
-                  <p className="text-xs font-semibold text-primary mb-1">Selected Route</p>
-                  <p className="text-xs text-muted-foreground">{currentRoute.path}</p>
-                </div>
-              </div>
+              {/* RouteMap Component */}
+              <RouteMap origin={origin} destination={destination} />
             </CardContent>
           </Card>
 

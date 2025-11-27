@@ -7,3 +7,4 @@ export { MetricCards } from "./MetricCards";
 export { ForecastChart } from "./ForecastChart";
 export { ModelConfiguration } from "./ModelConfiguration";
 export { ScenarioSimulation } from "./ScenarioSimulation";
+export { default as RouteMap } from "./RouteMap";
