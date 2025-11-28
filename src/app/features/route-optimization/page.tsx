@@ -1,75 +1,84 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RouteOptimizationHeader } from "../../../components/RouteOptimizationHeader";
 import { RouteConfiguration } from "../../../components/RouteConfiguration";
 import { VehicleConfiguration } from "../../../components/VehicleConfiguration";
 import { RouteMapSection } from "../../../components/RouteMapSection";
 import { RouteComparisonCards } from "../../../components/RouteComparisonCards";
 import { RouteDetailsAnalysis } from "../../../components/RouteDetailsAnalysis";
-
-const routeOptions = {
-  fastest: {
-    distance: 245,
-    duration: "3h 45min",
-    fuelCost: 180000,
-    tollCost: 45000,
-    co2: 85,
-    path: "Plant A → Warehouse B → Kios Bandung → Kios Garut",
-  },
-  cheapest: {
-    distance: 280,
-    duration: "4h 20min",
-    fuelCost: 155000,
-    tollCost: 25000,
-    co2: 92,
-    path: "Plant A → Warehouse A → Kios Tasikmalaya → Kios Garut",
-  },
-  greenest: {
-    distance: 260,
-    duration: "4h 10min",
-    fuelCost: 165000,
-    tollCost: 35000,
-    co2: 78,
-    path: "Plant A → Warehouse B → Kios Sumedang → Kios Garut",
-  },
-};
+import { apiService } from "../../../services/api";
+import { RouteOptimizationResponse, RouteOption } from "../../../types";
 
 const Routing = () => {
   const [selectedRoute, setSelectedRoute] = useState<"fastest" | "cheapest" | "greenest">("fastest");
   const [vehicleType, setVehicleType] = useState("truck-medium");
   const [loadCapacity, setLoadCapacity] = useState("8");
-  const [origin, setOrigin] = useState("plant-a");
-  const [destination, setDestination] = useState("kios-garut");
+  const [origin, setOrigin] = useState("plant-surabaya");
+  const [destination, setDestination] = useState("kios-malang");
+  const [routeOptions, setRouteOptions] = useState<RouteOptimizationResponse | null>(null);
+  const [loading, setLoading] = useState(true); // Start with loading true
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchRouteOptimization = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await apiService.optimizeRoute({
+        origin,
+        destination,
+        vehicle_type: vehicleType,
+        load_capacity: parseFloat(loadCapacity),
+      });
+      setRouteOptions(response);
+    } catch (err) {
+      setError("Failed to optimize route. Please try again.");
+      console.error("Route optimization error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRouteOptimization();
+  }, [origin, destination, vehicleType, loadCapacity]);
 
   const handleRouteSelect = (route: string) => {
     setSelectedRoute(route as "fastest" | "cheapest" | "greenest");
   };
 
-  const currentRoute = routeOptions[selectedRoute];
+  const currentRoute = routeOptions ? routeOptions[selectedRoute] : null;
 
   return (
-    <div className="space-y-2 md:space-y-6 p-2 md:p-6 animate-fade-in">
+    <div className="space-y-4 md:space-y-8 p-4 md:p-8 animate-fade-in">
       <RouteOptimizationHeader />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-6">
+      {error && (
+        <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+          <p className="text-destructive text-sm">{error}</p>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8 lg:h-auto">
         {/* Left Panel - Controls */}
-        <div className="space-y-6 lg:h-[calc(100vh-12rem)] lg:flex lg:flex-col">
+        <div className="space-y-6 lg:h-auto lg:flex lg:flex-col">
           <RouteConfiguration origin={origin} destination={destination} onOriginChange={setOrigin} onDestinationChange={setDestination} />
 
           <VehicleConfiguration vehicleType={vehicleType} loadCapacity={loadCapacity} onVehicleTypeChange={setVehicleType} onLoadCapacityChange={setLoadCapacity} />
         </div>
 
         {/* Right Panel - Map & Route Comparison */}
-        <div className="lg:col-span-2 space-y-6 lg:h-[calc(100vh-12rem)] lg:flex lg:flex-col">
-          <RouteMapSection origin={origin} destination={destination} />
+        <div className="lg:col-span-2 space-y-6 lg:h-auto lg:flex lg:flex-col">
+          <RouteMapSection origin={origin} destination={destination} routeOptions={routeOptions} selectedRoute={selectedRoute} />
 
-          <RouteComparisonCards routeOptions={routeOptions} selectedRoute={selectedRoute} onRouteSelect={handleRouteSelect} />
+          <RouteComparisonCards routeOptions={routeOptions} selectedRoute={selectedRoute} onRouteSelect={handleRouteSelect} loading={loading} />
         </div>
       </div>
 
       {/* Detailed Route Analysis - Full Width */}
-      <RouteDetailsAnalysis currentRoute={currentRoute} />
+      <div className="mt-4 md:mt-8">
+        <RouteDetailsAnalysis currentRoute={currentRoute} loading={loading} />
+      </div>
     </div>
   );
 };

@@ -66,7 +66,7 @@ export function ChatMessage({ message, onSuggestionClick }: ChatMessageProps) {
           </div>
         </div>
         {!message.isLoading && (
-          <div className="flex items-center justify-between text-xs opacity-60">
+          <div className="flex pt-2 items-center justify-between text-xs opacity-60">
             <span>
               {message.timestamp.toLocaleTimeString([], {
                 hour: "2-digit",
@@ -74,9 +74,14 @@ export function ChatMessage({ message, onSuggestionClick }: ChatMessageProps) {
               })}
             </span>
             {message.role === "assistant" && (
-              <Badge variant="outline" className="text-xs">
-                Source: AI Analytics Engine
-              </Badge>
+              <div className="flex gap-1">
+                <Badge variant="outline" className="text-xs">
+                  Agent: Google Gemini 2.5 Flash
+                </Badge>
+                <Badge variant="outline" className="text-xs">
+                  Source: PukPuk Database
+                </Badge>
+              </div>
             )}
           </div>
         )}

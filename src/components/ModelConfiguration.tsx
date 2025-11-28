@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
@@ -20,9 +20,29 @@ interface ModelConfigurationProps {
 
 export function ModelConfiguration({ onRunForecast, loading = false }: ModelConfigurationProps) {
   const [cropType, setCropType] = useState("rice");
-  const [region, setRegion] = useState("jawa-barat");
+  const [region, setRegion] = useState("malang regency");
   const [season, setSeason] = useState("wet-season");
   const [exportLoading, setExportLoading] = useState(false);
+
+  // Run forecast once on mount
+  useEffect(() => {
+    if (onRunForecast) {
+      onRunForecast({ crop_type: cropType, region, season });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Debounced auto-run when any parameter changes
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (onRunForecast) {
+        onRunForecast({ crop_type: cropType, region, season });
+      }
+    }, 450);
+
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cropType, region, season]);
 
   const handleRunForecast = () => {
     if (onRunForecast) {
@@ -58,6 +78,7 @@ export function ModelConfiguration({ onRunForecast, loading = false }: ModelConf
     <Card className="glass-panel">
       <CardHeader>
         <CardTitle className="text-lg">Model Configuration</CardTitle>
+        <p className="text-xs text-muted-foreground">Forecast runs automatically when parameters change</p>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-2">
@@ -69,7 +90,8 @@ export function ModelConfiguration({ onRunForecast, loading = false }: ModelConf
             <SelectContent>
               <SelectItem value="rice">Rice</SelectItem>
               <SelectItem value="corn">Corn</SelectItem>
-              <SelectItem value="wheat">Wheat</SelectItem>
+              <SelectItem value="sugarcane">Sugarcane</SelectItem>
+              <SelectItem value="soybean">Soybean</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -81,9 +103,11 @@ export function ModelConfiguration({ onRunForecast, loading = false }: ModelConf
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="jawa-barat">Jawa Barat</SelectItem>
-              <SelectItem value="jawa-tengah">Jawa Tengah</SelectItem>
-              <SelectItem value="jawa-timur">Jawa Timur</SelectItem>
+              <SelectItem value="malang regency">Malang Regency</SelectItem>
+              <SelectItem value="blitar regency">Blitar Regency</SelectItem>
+              <SelectItem value="kediri regency">Kediri Regency</SelectItem>
+              <SelectItem value="madiun regency">Madiun Regency</SelectItem>
+              <SelectItem value="jember regency">Jember Regency</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -104,7 +128,7 @@ export function ModelConfiguration({ onRunForecast, loading = false }: ModelConf
         <div className="pt-4 space-y-4">
           <Button className="w-full" onClick={handleRunForecast} disabled={loading}>
             <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} />
-            {loading ? "Running..." : "Run Forecast"}
+            {loading ? "Running..." : "Refresh Forecast"}
           </Button>
           <Button variant="outline" className="w-full" onClick={handleExport} disabled={exportLoading}>
             <Download className={`w-4 h-4 mr-2 ${exportLoading ? "animate-spin" : ""}`} />

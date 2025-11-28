@@ -3,21 +3,36 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Leaf } from "lucide-react";
-
-interface RouteOption {
-  distance: number;
-  duration: string;
-  fuelCost: number;
-  tollCost: number;
-  co2: number;
-  path: string;
-}
+import { RouteOption } from "../types";
 
 interface RouteDetailsAnalysisProps {
-  currentRoute: RouteOption;
+  currentRoute: RouteOption | null;
+  loading?: boolean;
 }
 
-export function RouteDetailsAnalysis({ currentRoute }: RouteDetailsAnalysisProps) {
+export function RouteDetailsAnalysis({ currentRoute, loading = false }: RouteDetailsAnalysisProps) {
+  if (loading) {
+    return (
+      <Card className="border-border/50">
+        <CardHeader>
+          <div className="h-6 bg-muted animate-pulse rounded"></div>
+          <div className="h-4 bg-muted animate-pulse rounded w-3/4"></div>
+        </CardHeader>
+        <CardContent>
+          <div className="h-32 bg-muted animate-pulse rounded"></div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!currentRoute) {
+    return (
+      <Card className="border-border/50">
+        <CardContent className="p-6 text-center text-muted-foreground">Select a route to view details</CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="border-border/50">
       <CardHeader>
@@ -36,11 +51,11 @@ export function RouteDetailsAnalysis({ currentRoute }: RouteDetailsAnalysisProps
             <div className="space-y-3">
               <div className="flex justify-between items-center p-3 rounded-lg bg-muted/20">
                 <span className="text-sm text-muted-foreground">Fuel Cost</span>
-                <span className="font-semibold">Rp {currentRoute.fuelCost.toLocaleString()}</span>
+                <span className="font-semibold">Rp {currentRoute.fuel_cost.toLocaleString()}</span>
               </div>
               <div className="flex justify-between items-center p-3 rounded-lg bg-muted/20">
                 <span className="text-sm text-muted-foreground">Toll Cost</span>
-                <span className="font-semibold">Rp {currentRoute.tollCost.toLocaleString()}</span>
+                <span className="font-semibold">Rp {currentRoute.toll_cost.toLocaleString()}</span>
               </div>
               <div className="flex justify-between items-center p-3 rounded-lg bg-muted/20">
                 <span className="text-sm text-muted-foreground">Driver Cost (estimated)</span>
@@ -48,7 +63,7 @@ export function RouteDetailsAnalysis({ currentRoute }: RouteDetailsAnalysisProps
               </div>
               <div className="flex justify-between items-center p-4 rounded-lg bg-primary/10 border border-primary/20">
                 <span className="text-sm font-semibold text-foreground">Total Estimated Cost</span>
-                <span className="text-lg font-bold text-primary">Rp {(currentRoute.fuelCost + currentRoute.tollCost + 120000).toLocaleString()}</span>
+                <span className="text-lg font-bold text-primary">Rp {(currentRoute.fuel_cost + currentRoute.toll_cost + 120000).toLocaleString()}</span>
               </div>
             </div>
           </TabsContent>
