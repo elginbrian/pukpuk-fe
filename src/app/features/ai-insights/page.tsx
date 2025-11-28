@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader } from "../../../components/ui/card";
 import { MessageList, ChatInput, QuickActions, RecentInsights } from "../../../components";
+import { ScrollArea } from "../../../components/ui/scroll-area";
 import { apiService } from "../../../services/api";
 import { AIInsightRequest } from "../../../types";
 
@@ -206,7 +207,7 @@ export default function Insights() {
   };
 
   return (
-    <div className="space-y-2 md:space-y-6 p-2 md:p-6 animate-fade-in">
+    <div className="space-y-2 md:space-y-6 p-2 md:pl-6 md:pr-6 md:pt-6 animate-fade-in">
       <div>
         <h1 className="text-2xl md:text-3xl font-bold mb-2">AI Insights & Recommendations</h1>
         <p className="text-sm md:text-base text-muted-foreground">Conversational intelligence powered by supply chain analytics</p>
@@ -214,25 +215,27 @@ export default function Insights() {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-2 md:gap-6">
         {/* Main Chat Area */}
-        <Card className="lg:col-span-3 glass-panel flex flex-col">
+        <Card className="lg:col-span-3 glass-panel flex flex-col max-h-[90vh]">
           <CardHeader className="border-b border-border">
             <CardDescription className="text-xs md:text-sm">Tip: Ask questions about your supply chain data!</CardDescription>
           </CardHeader>
 
-          <CardContent className="flex-1 flex flex-col p-0">
+          <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
             <MessageList messages={messages} onSuggestionClick={handleSuggestionClick} />
             <ChatInput input={input} onInputChange={setInput} onSend={handleSend} isLoading={isLoading} />
           </CardContent>
         </Card>
 
         {/* Quick Actions Sidebar */}
-        <div className="space-y-4">
-          <QuickActions onActionClick={handleQuickActionClick} />
+        <ScrollArea className="max-h-[90vh]">
+          <div className="space-y-4">
+            <QuickActions onActionClick={handleQuickActionClick} />
 
-          <Card className="glass-panel">
-            <RecentInsights />
-          </Card>
-        </div>
+            <Card className="glass-panel">
+              <RecentInsights />
+            </Card>
+          </div>
+        </ScrollArea>
       </div>
     </div>
   );

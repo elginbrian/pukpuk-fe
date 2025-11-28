@@ -6,6 +6,8 @@ import {
   ScenarioRequest,
   AIInsightRequest,
   AIInsightResponse,
+  AIInsight,
+  AutomaticInsight,
   ChatRequest,
   ChatResponse,
   CreateSessionRequest,
@@ -78,6 +80,20 @@ class ApiService {
   async getChatHistory(sessionId: string, limit: number = 50): Promise<ChatMessage[]> {
     const response = await this.axiosInstance.get<ChatMessage[]>(`/ai-insight/session/${sessionId}/history`, {
       params: { limit },
+    });
+    return response.data;
+  }
+
+  async getRecentInsights(limit: number = 10): Promise<AIInsight[]> {
+    const response = await this.axiosInstance.get<AIInsight[]>("/ai-insight/recent-insights", {
+      params: { limit },
+    });
+    return response.data;
+  }
+
+  async getAutomaticInsights(cropType: string = "rice", region: string = "malang regency", season: string = "wet-season", limit: number = 3): Promise<AutomaticInsight[]> {
+    const response = await this.axiosInstance.get<AutomaticInsight[]>("/ai-insight/automatic-insights", {
+      params: { crop_type: cropType, region, season, limit },
     });
     return response.data;
   }

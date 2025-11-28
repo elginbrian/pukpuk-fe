@@ -38,6 +38,30 @@ export interface AIInsightResponse {
   suggestions: string[];
 }
 
+export interface AIInsight {
+  user_query: string;
+  ai_response: string;
+  suggestions: string[];
+  crop_type: string;
+  region: string;
+  season: string;
+  created_at: string;
+}
+
+export interface AutomaticInsight {
+  title: string;
+  description: string;
+  type: string;
+  priority: string;
+}
+
+export interface AutomaticInsight {
+  title: string;
+  description: string;
+  type: string;
+  priority: string;
+}
+
 export interface ChatMessage {
   role: string;
   content: string;
