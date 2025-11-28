@@ -1,5 +1,22 @@
 import axios, { AxiosInstance } from "axios";
-import { ForecastData, Metrics, ForecastRequest, ScenarioRequest, AIInsightRequest, AIInsightResponse, ChatRequest, ChatResponse, CreateSessionRequest, CreateSessionResponse, ChatMessage } from "../types";
+import {
+  ForecastData,
+  Metrics,
+  ForecastRequest,
+  ScenarioRequest,
+  AIInsightRequest,
+  AIInsightResponse,
+  ChatRequest,
+  ChatResponse,
+  CreateSessionRequest,
+  CreateSessionResponse,
+  ChatMessage,
+  RouteOptimizationRequest,
+  RouteOptimizationResponse,
+  Location,
+  Vehicle,
+  RouteConfiguration,
+} from "../types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
 
@@ -62,6 +79,26 @@ class ApiService {
     const response = await this.axiosInstance.get<ChatMessage[]>(`/ai-insight/session/${sessionId}/history`, {
       params: { limit },
     });
+    return response.data;
+  }
+
+  async optimizeRoute(request: RouteOptimizationRequest): Promise<RouteOptimizationResponse> {
+    const response = await this.axiosInstance.post<RouteOptimizationResponse>("/route-optimization/optimize", request);
+    return response.data;
+  }
+
+  async getLocations(): Promise<Location[]> {
+    const response = await this.axiosInstance.get<Location[]>("/route-optimization/locations");
+    return response.data;
+  }
+
+  async getVehicles(): Promise<Vehicle[]> {
+    const response = await this.axiosInstance.get<Vehicle[]>("/route-optimization/vehicles");
+    return response.data;
+  }
+
+  async getRouteConfigurations(): Promise<RouteConfiguration[]> {
+    const response = await this.axiosInstance.get<RouteConfiguration[]>("/route-optimization/configurations");
     return response.data;
   }
 }

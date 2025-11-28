@@ -1,10 +1,13 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Truck } from "lucide-react";
+import { apiService } from "../services/api";
+import { Vehicle } from "../types";
 
 interface VehicleConfigurationProps {
   vehicleType: string;
@@ -14,49 +17,73 @@ interface VehicleConfigurationProps {
 }
 
 export function VehicleConfiguration({ vehicleType, loadCapacity, onVehicleTypeChange, onLoadCapacityChange }: VehicleConfigurationProps) {
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const data = await apiService.getVehicles();
+        setVehicles(data);
+      } catch (error) {
+        console.error("Failed to fetch vehicles:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVehicles();
+  }, []);
+
+  const selectedVehicle = vehicles.find((v) => v.code === vehicleType);
+
   return (
-    <Card className="border-border/50 lg:flex-1 lg:flex lg:flex-col lg:overflow-hidden">
-      <CardHeader className="lg:flex-shrink-0">
+    <Card className="border-border/50 lg:flex-1 lg:flex lg:flex-col">
+      <CardHeader>
         <CardTitle className="text-lg">Vehicle Configuration</CardTitle>
         <CardDescription>Select vehicle and load capacity</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4 lg:flex-1 lg:overflow-y-auto">
+      <CardContent className="space-y-4 flex-1">
         <div className="space-y-2">
           <Label className="flex items-center gap-2">
             <Truck className="h-4 w-4" />
             Vehicle Type
           </Label>
-          <Select value={vehicleType} onValueChange={onVehicleTypeChange}>
+          <Select value={vehicleType} onValueChange={onVehicleTypeChange} disabled={loading}>
             <SelectTrigger>
-              <SelectValue />
+              <SelectValue placeholder={loading ? "Loading..." : "Select vehicle"} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="truck-small">Small Truck (3-5 tons)</SelectItem>
-              <SelectItem value="truck-medium">Medium Truck (6-10 tons)</SelectItem>
-              <SelectItem value="truck-large">Large Truck (11-15 tons)</SelectItem>
+              {vehicles.map((vehicle) => (
+                <SelectItem key={vehicle.code} value={vehicle.code}>
+                  {vehicle.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
 
         <div className="space-y-2">
           <Label>Load Capacity (tons)</Label>
-          <Input type="number" value={loadCapacity} onChange={(e) => onLoadCapacityChange(e.target.value)} min="1" max="15" />
+          <Input type="number" value={loadCapacity} onChange={(e) => onLoadCapacityChange(e.target.value)} min={selectedVehicle?.min_capacity || 1} max={selectedVehicle?.max_capacity || 15} />
         </div>
 
-        <div className="p-3 rounded-lg bg-muted/20 space-y-2">
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Fuel Consumption</span>
-            <span className="font-medium">2.8 km/L</span>
+        {selectedVehicle && (
+          <div className="p-3 rounded-lg bg-muted/20 space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Fuel Consumption</span>
+              <span className="font-medium">{selectedVehicle.fuel_consumption} km/L</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Average Speed</span>
+              <span className="font-medium">{selectedVehicle.average_speed} km/h</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">CO₂ Factor</span>
+              <span className="font-medium">{selectedVehicle.co2_factor} kg/km</span>
+            </div>
           </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Average Speed</span>
-            <span className="font-medium">65 km/h</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">CO₂ Factor</span>
-            <span className="font-medium">0.35 kg/km</span>
-          </div>
-        </div>
+        )}
       </CardContent>
     </Card>
   );

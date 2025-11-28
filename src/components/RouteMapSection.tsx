@@ -25,22 +25,52 @@ const RouteMap = dynamic(() => import("./RouteMap"), {
   ),
 });
 
+import { RouteOptimizationResponse } from "../types";
+
 interface RouteMapSectionProps {
   origin: string;
   destination: string;
+  routeOptions: RouteOptimizationResponse | null;
+  selectedRoute: "fastest" | "cheapest" | "greenest";
 }
 
-export function RouteMapSection({ origin, destination }: RouteMapSectionProps) {
+export function RouteMapSection({ origin, destination, routeOptions, selectedRoute }: RouteMapSectionProps) {
+  const hasValidRouteData = routeOptions && routeOptions[selectedRoute]?.waypoints && routeOptions[selectedRoute].waypoints!.length > 0;
+
+  if (!hasValidRouteData) {
+    return (
+      <Card className="border-border/50 overflow-hidden lg:flex-1 lg:flex lg:flex-col relative">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2">
+            <Navigation className="h-5 w-5" />
+            Route Visualization
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="lg:flex-1 lg:flex lg:flex-col pb-6">
+          <div className="w-full h-full min-h-[280px] md:min-h-[380px] lg:min-h-[520px] border-2 border-dashed border-border/50 rounded-lg flex items-center justify-center overflow-hidden">
+            <div className="text-center text-muted-foreground">
+              <Navigation className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p className="text-lg font-medium">No Route Data Available</p>
+              <p className="text-sm">Please select valid origin, destination, and configuration to view the route</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
-    <Card className="border-border/50 overflow-hidden lg:flex-1 lg:flex lg:flex-col max-h-[600px] lg:max-h-none">
+    <Card className="border-border/50 overflow-hidden lg:flex-1 lg:flex lg:flex-col relative">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2">
           <Navigation className="h-5 w-5" />
           Route Visualization
         </CardTitle>
       </CardHeader>
-      <CardContent className="lg:flex-1 lg:flex lg:flex-col pb-6 max-h-[500px] lg:max-h-none">
-        <RouteMap origin={origin} destination={destination} />
+      <CardContent className="lg:flex-1 lg:flex lg:flex-col pb-6">
+        <div className="w-full h-full min-h-[300px] md:min-h-[420px] lg:min-h-[600px]">
+          <RouteMap origin={origin} destination={destination} routeOptions={routeOptions} selectedRoute={selectedRoute} />
+        </div>
       </CardContent>
     </Card>
   );

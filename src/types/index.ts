@@ -68,3 +68,61 @@ export interface CreateSessionResponse {
   season: string;
   created_at: string;
 }
+
+export interface Location {
+  code: string;
+  name: string;
+  coordinates: [number, number]; // [latitude, longitude]
+  type: string;
+  address: string;
+  icon_url: string;
+}
+
+// Route Optimization Types
+export interface RouteOption {
+  id: string;
+  distance: number;
+  duration: string;
+  fuel_cost: number;
+  toll_cost: number;
+  co2: number;
+  path: string;
+  waypoints?: Array<[number, number]>; // Optional waypoints for map
+}
+
+export interface RouteOptimizationRequest {
+  origin: string;
+  destination: string;
+  vehicle_type: string;
+  load_capacity: number;
+}
+
+export interface RouteOptimizationResponse {
+  fastest: RouteOption;
+  cheapest: RouteOption;
+  greenest: RouteOption;
+}
+
+export interface Vehicle {
+  code: string;
+  name: string;
+  min_capacity: number;
+  max_capacity: number;
+  fuel_consumption: number;
+  average_speed: number;
+  co2_factor: number;
+  type: string;
+}
+
+export interface RouteConfiguration {
+  origin: string;
+  destination: string;
+  vehicle_type: string;
+  load_capacity: number;
+  fastest_distance: number;
+  cheapest_distance: number;
+  greenest_distance: number;
+  fastest_path: string[];
+  cheapest_path: string[];
+  greenest_path: string[];
+}
