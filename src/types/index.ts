@@ -87,7 +87,6 @@ export interface RouteOption {
   toll_cost: number;
   co2: number;
   path: string;
-  waypoints?: Array<[number, number]>; // Optional waypoints for map
 }
 
 export interface RouteOptimizationRequest {

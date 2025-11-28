@@ -35,7 +35,7 @@ interface RouteMapSectionProps {
 }
 
 export function RouteMapSection({ origin, destination, routeOptions, selectedRoute }: RouteMapSectionProps) {
-  const hasValidRouteData = routeOptions && routeOptions[selectedRoute]?.waypoints && routeOptions[selectedRoute].waypoints!.length > 0;
+  const hasValidRouteData = routeOptions && routeOptions[selectedRoute];
 
   if (!hasValidRouteData) {
     return (

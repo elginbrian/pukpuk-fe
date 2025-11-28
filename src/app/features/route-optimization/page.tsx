@@ -14,8 +14,8 @@ const Routing = () => {
   const [selectedRoute, setSelectedRoute] = useState<"fastest" | "cheapest" | "greenest">("fastest");
   const [vehicleType, setVehicleType] = useState("truck-medium");
   const [loadCapacity, setLoadCapacity] = useState("8");
-  const [origin, setOrigin] = useState("plant-a");
-  const [destination, setDestination] = useState("kios-garut");
+  const [origin, setOrigin] = useState("plant-surabaya");
+  const [destination, setDestination] = useState("kios-malang");
   const [routeOptions, setRouteOptions] = useState<RouteOptimizationResponse | null>(null);
   const [loading, setLoading] = useState(true); // Start with loading true
   const [error, setError] = useState<string | null>(null);

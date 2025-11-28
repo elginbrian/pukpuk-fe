@@ -97,8 +97,12 @@ class ApiService {
     return response.data;
   }
 
-  async getRouteConfigurations(): Promise<RouteConfiguration[]> {
-    const response = await this.axiosInstance.get<RouteConfiguration[]>("/route-optimization/configurations");
+  async getRouteDirections(originCoords: [number, number], destCoords: [number, number], routeType: string = "fastest"): Promise<any> {
+    const response = await this.axiosInstance.post("/route-optimization/directions", {
+      origin_coords: originCoords,
+      dest_coords: destCoords,
+      route_type: routeType,
+    });
     return response.data;
   }
 }
