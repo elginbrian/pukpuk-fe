@@ -66,7 +66,7 @@ export default function Insights() {
       const request: AIInsightRequest = {
         query: textToSend,
         crop_type: "rice",
-        region: "jawa-barat",
+        region: "malang regency",
         season: "wet-season",
         session_id: sessionId || undefined,
       };

@@ -4,6 +4,8 @@ export interface ForecastData {
   month: string;
   actual: number | null;
   predicted: number;
+  upper_ci?: number;
+  lower_ci?: number;
 }
 
 export interface Metrics {
