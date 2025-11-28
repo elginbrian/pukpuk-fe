@@ -50,7 +50,7 @@ const Routing = () => {
   const currentRoute = routeOptions ? routeOptions[selectedRoute] : null;
 
   return (
-    <div className="space-y-2 md:space-y-6 p-2 md:p-6 animate-fade-in">
+    <div className="space-y-4 md:space-y-8 p-4 md:p-8 animate-fade-in">
       <RouteOptimizationHeader />
 
       {error && (
@@ -59,16 +59,16 @@ const Routing = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-6 lg:h-[calc(140vh-13rem)]">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8 lg:h-auto">
         {/* Left Panel - Controls */}
-        <div className="space-y-6 lg:h-[calc(120vh-12rem)] lg:flex lg:flex-col">
+        <div className="space-y-6 lg:h-auto lg:flex lg:flex-col">
           <RouteConfiguration origin={origin} destination={destination} onOriginChange={setOrigin} onDestinationChange={setDestination} />
 
           <VehicleConfiguration vehicleType={vehicleType} loadCapacity={loadCapacity} onVehicleTypeChange={setVehicleType} onLoadCapacityChange={setLoadCapacity} />
         </div>
 
         {/* Right Panel - Map & Route Comparison */}
-        <div className="lg:col-span-2 space-y-6 lg:h-[calc(120vh-12rem)] lg:flex lg:flex-col">
+        <div className="lg:col-span-2 space-y-6 lg:h-auto lg:flex lg:flex-col">
           <RouteMapSection origin={origin} destination={destination} routeOptions={routeOptions} selectedRoute={selectedRoute} />
 
           <RouteComparisonCards routeOptions={routeOptions} selectedRoute={selectedRoute} onRouteSelect={handleRouteSelect} loading={loading} />
@@ -76,7 +76,9 @@ const Routing = () => {
       </div>
 
       {/* Detailed Route Analysis - Full Width */}
-      <RouteDetailsAnalysis currentRoute={currentRoute} loading={loading} />
+      <div className="mt-4 md:mt-8">
+        <RouteDetailsAnalysis currentRoute={currentRoute} loading={loading} />
+      </div>
     </div>
   );
 };

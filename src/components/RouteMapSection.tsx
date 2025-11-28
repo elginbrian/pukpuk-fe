@@ -12,7 +12,7 @@ const RouteMap = dynamic(() => import("./RouteMap"), {
       style={{
         width: "100%",
         height: "100%",
-        minHeight: 400,
+        minHeight: 140,
         borderRadius: "0.5rem",
         backgroundColor: "#f3f4f6",
         display: "flex",
@@ -46,8 +46,8 @@ export function RouteMapSection({ origin, destination, routeOptions, selectedRou
             Route Visualization
           </CardTitle>
         </CardHeader>
-        <CardContent className="lg:flex-1 lg:flex lg:flex-col pb-6">
-          <div className="w-full h-full min-h-[280px] md:min-h-[380px] lg:min-h-[520px] border-2 border-dashed border-border/50 rounded-lg flex items-center justify-center overflow-hidden">
+        <CardContent className="lg:flex-1 lg:flex lg:flex-col pb-2">
+          <div className="w-full h-full min-h-[160px] md:min-h-[240px] lg:min-h-[320px] border-2 border-dashed border-border/50 rounded-lg flex items-center justify-center overflow-hidden">
             <div className="text-center text-muted-foreground">
               <Navigation className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p className="text-lg font-medium">No Route Data Available</p>
@@ -67,8 +67,8 @@ export function RouteMapSection({ origin, destination, routeOptions, selectedRou
           Route Visualization
         </CardTitle>
       </CardHeader>
-      <CardContent className="lg:flex-1 lg:flex lg:flex-col pb-6">
-        <div className="w-full h-full min-h-[300px] md:min-h-[420px] lg:min-h-[600px]">
+      <CardContent className="lg:flex-1 lg:flex lg:flex-col pb-2">
+        <div className="w-full h-full min-h-[160px] md:min-h-[240px] lg:min-h-[320px]">
           <RouteMap origin={origin} destination={destination} routeOptions={routeOptions} selectedRoute={selectedRoute} />
         </div>
       </CardContent>

@@ -17,6 +17,7 @@ const RouteMap = ({ origin, destination, routeOptions, selectedRoute }: RouteMap
   const mapRef = useRef<Map | null>(null);
   const routeLayerRef = useRef<Polyline | null>(null);
   const [locations, setLocations] = useState<any[]>([]);
+  const [mapSize, setMapSize] = useState<"small" | "medium" | "large">("medium");
 
   // Fetch locations from backend
   useEffect(() => {
@@ -162,14 +163,47 @@ const RouteMap = ({ origin, destination, routeOptions, selectedRoute }: RouteMap
     };
   }, [origin, destination, routeOptions, selectedRoute, locations]);
 
+  const minHeights = {
+    small: 240,
+    medium: 360,
+    large: 480,
+  } as const;
+
+  useEffect(() => {
+    if (mapRef.current) {
+      setTimeout(() => {
+        try {
+          mapRef.current!.invalidateSize();
+        } catch (err) {}
+      }, 150);
+    }
+  }, [mapSize]);
+
   return (
-    <div
-      id="route-map"
-      className="w-full max-w-full rounded-lg overflow-hidden relative"
-      style={{
-        minHeight: 300,
-      }}
-    />
+    <div className="w-full max-w-full rounded-lg overflow-hidden relative">
+      {/* Map size control (top-right) */}
+      <div className="absolute top-3 right-3 z-20">
+        <div className="bg-muted/60 backdrop-blur-sm text-xs rounded-md px-2 py-1 pb-2 flex items-center gap-1">
+          <button aria-pressed={mapSize === "small"} onClick={() => setMapSize("small")} className={`px-2 py-1 rounded ${mapSize === "small" ? "bg-border/20" : "hover:bg-muted/40"}`}>
+            S
+          </button>
+          <button aria-pressed={mapSize === "medium"} onClick={() => setMapSize("medium")} className={`px-2 py-1 rounded ${mapSize === "medium" ? "bg-border/20" : "hover:bg-muted/40"}`}>
+            M
+          </button>
+          <button aria-pressed={mapSize === "large"} onClick={() => setMapSize("large")} className={`px-2 py-1 rounded ${mapSize === "large" ? "bg-border/20" : "hover:bg-muted/40"}`}>
+            L
+          </button>
+        </div>
+      </div>
+
+      <div
+        id="route-map"
+        className="w-full h-full"
+        style={{
+          minHeight: minHeights[mapSize],
+        }}
+      />
+    </div>
   );
 };
 
