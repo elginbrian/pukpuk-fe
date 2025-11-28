@@ -258,18 +258,17 @@ export default function Inventory() {
 
       {/* Alert Detail Sheet */}
       <Sheet open={selectedAlert !== null} onOpenChange={(open) => !open && setSelectedAlert(null)}>
-        <SheetContent className="h-screen overflow-y-auto overflow-x-hidden w-full sm:max-w-2xl">
+        <SheetContent className="h-[90vh] w-[95vw] sm:w-[90vw] md:w-[80vw] lg:w-[60vw] max-w-4xl left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] rounded-lg flex flex-col p-0" side="bottom">
           {selectedAlert !== null && (
             <>
-              <SheetHeader className="border-b border-border">
+              <SheetHeader className="border-b border-border px-6 py-4 shrink-0">
                 <div className="space-y-2">
                   <SheetTitle className="text-2xl">Alert Details</SheetTitle>
                   <SheetDescription>{alerts[selectedAlert].location}</SheetDescription>
-=
                 </div>
               </SheetHeader>
 
-              <div className="p-6 space-y-6 overflow-y-auto overflow-x-hidden">
+              <div className="p-6 space-y-6 overflow-y-auto overflow-x-hidden flex-1">
                 {/* Alert Status */}
                 <Card className="">
                   <CardHeader>
@@ -386,17 +385,17 @@ export default function Inventory() {
 
       {/* Inventory Detail Sheet */}
       <Sheet open={selectedInventory !== null} onOpenChange={(open) => !open && setSelectedInventory(null)}>
-        <SheetContent className="h-screen overflow-y-auto overflow-x-hidden w-full sm:max-w-2xl">
+        <SheetContent className="h-[90vh] w-[95vw] sm:w-[90vw] md:w-[80vw] lg:w-[60vw] max-w-4xl left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] rounded-lg flex flex-col p-0" side="bottom">
           {selectedInventory !== null && (
             <>
-              <SheetHeader className="border-b border-border">
+              <SheetHeader className="border-b border-border px-6 py-4 shrink-0">
                 <div className="space-y-2">
                   <SheetTitle className="text-2xl">{inventoryData[selectedInventory].location}</SheetTitle>
                   <SheetDescription className="capitalize">{inventoryData[selectedInventory].type} Facility</SheetDescription>
                 </div>
               </SheetHeader>
 
-              <div className="p-6 space-y-6 overflow-y-auto overflow-x-hidden">
+              <div className="p-6 space-y-6 overflow-y-auto overflow-x-hidden flex-1">
                 {/* Stock Overview */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                   <Card className="">
