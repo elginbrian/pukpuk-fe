@@ -14,19 +14,59 @@ interface Message {
   isLoading?: boolean;
 }
 
+interface DataStatus {
+  metrics: boolean;
+  forecast: boolean;
+  locations: boolean;
+  vehicles: boolean;
+  routes: boolean;
+}
+
+const getInitialMessage = (status: DataStatus): Message => {
+  let content = "Hello! I'm your AI assistant for supply chain intelligence. ";
+  const availableFeatures = [];
+
+  if (status.metrics) availableFeatures.push("demand forecasting analysis");
+  if (status.forecast) availableFeatures.push("performance metrics review");
+  if (status.locations && status.vehicles) availableFeatures.push("route optimization");
+  if (status.routes) availableFeatures.push("logistics planning");
+
+  if (availableFeatures.length > 0) {
+    content += `I currently have access to: ${availableFeatures.join(", ")}. `;
+  } else {
+    content += "I'm connecting to your supply chain data. ";
+  }
+
+  content += "What would you like to explore?";
+
+  const suggestions = [];
+  if (status.metrics) suggestions.push("What's the demand trend?");
+  if (status.forecast) suggestions.push("Show forecasting accuracy");
+  if (status.routes) suggestions.push("Analyze routes");
+  if (status.vehicles) suggestions.push("Optimize fleet");
+  suggestions.push("Check data status");
+
+  return {
+    role: "assistant",
+    content,
+    suggestions,
+    timestamp: new Date(),
+  };
+};
+
 export default function Insights() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      content:
-        "Hello! I'm your AI assistant for supply chain intelligence. I can help you with demand forecasting, inventory optimization, route planning, and data analysis. I have access to your current supply chain data and can provide insights based on real metrics and forecasts. What would you like to explore?",
-      suggestions: ["What's the current demand trend?", "Show me inventory optimization suggestions", "Analyze route efficiency", "Check forecasting accuracy"],
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [dataStatus, setDataStatus] = useState<DataStatus>({
+    metrics: false,
+    forecast: false,
+    locations: false,
+    vehicles: false,
+    routes: false,
+  });
+  const [isCheckingData, setIsCheckingData] = useState(true);
 
   useEffect(() => {
     const initializeSession = async () => {
@@ -38,7 +78,59 @@ export default function Insights() {
       }
     };
 
+    const checkDataAvailability = async () => {
+      setIsCheckingData(true);
+      const status: DataStatus = {
+        metrics: false,
+        forecast: false,
+        locations: false,
+        vehicles: false,
+        routes: false,
+      };
+
+      try {
+        await apiService.getMetrics();
+        status.metrics = true;
+      } catch (error) {
+        console.log("Metrics not available:", error);
+      }
+
+      try {
+        await apiService.runForecast({
+          crop_type: "rice",
+          region: "malang regency",
+          season: "wet-season",
+        });
+        status.forecast = true;
+      } catch (error) {
+        console.log("Forecast data not available:", error);
+      }
+
+      try {
+        await apiService.getLocations();
+        status.locations = true;
+      } catch (error) {
+        console.log("Locations not available:", error);
+      }
+
+      try {
+        await apiService.getVehicles();
+        status.vehicles = true;
+      } catch (error) {
+        console.log("Vehicles not available:", error);
+      }
+
+      status.routes = status.locations && status.vehicles;
+
+      setDataStatus(status);
+      setIsCheckingData(false);
+
+      const initialMessage = getInitialMessage(status);
+      setMessages([initialMessage]);
+    };
+
     initializeSession();
+    checkDataAvailability();
   }, []);
 
   const handleSend = async (messageText?: string) => {
@@ -136,6 +228,7 @@ export default function Insights() {
         {/* Quick Actions Sidebar */}
         <div className="space-y-4">
           <QuickActions onActionClick={handleQuickActionClick} />
+
           <Card className="glass-panel">
             <RecentInsights />
           </Card>
