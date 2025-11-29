@@ -121,6 +121,30 @@ class ApiService {
     });
     return response.data;
   }
+
+  async getRegionMappings(): Promise<Record<string, string>> {
+    const response = await this.axiosInstance.get<Record<string, string>>("/demand-heatmap/region-mappings");
+    return response.data;
+  }
+
+  async getGeoJson(filename: string): Promise<any> {
+    const response = await this.axiosInstance.get(`/demand-heatmap/maps/${filename}`);
+    return response.data;
+  }
+
+  async getDemandHeatmapData(
+    level: string,
+    mode: string,
+    layer: string
+  ): Promise<{
+    mapAnalytics: Record<string, { status: string; value: number; label: string }>;
+    regionalInsights: Array<{ name: string; code: string; demand: string; confidence: number; trend: string; risk: string }>;
+  }> {
+    const response = await this.axiosInstance.get(`/demand-heatmap/demand-data`, {
+      params: { level, mode, layer },
+    });
+    return response.data;
+  }
 }
 
 export const apiService = new ApiService();
