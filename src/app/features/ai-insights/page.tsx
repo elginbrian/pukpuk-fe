@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader } from "../../../components/ui/card";
 import { MessageList, ChatInput, QuickActions, RecentInsights } from "../../../components";
+import { ScrollArea } from "../../../components/ui/scroll-area";
 import { apiService } from "../../../services/api";
 import { AIInsightRequest } from "../../../types";
 
@@ -14,19 +15,59 @@ interface Message {
   isLoading?: boolean;
 }
 
+interface DataStatus {
+  metrics: boolean;
+  forecast: boolean;
+  locations: boolean;
+  vehicles: boolean;
+  routes: boolean;
+}
+
+const getInitialMessage = (status: DataStatus): Message => {
+  let content = "Hello! I'm your AI assistant for supply chain intelligence. ";
+  const availableFeatures = [];
+
+  if (status.metrics) availableFeatures.push("demand forecasting analysis");
+  if (status.forecast) availableFeatures.push("performance metrics review");
+  if (status.locations && status.vehicles) availableFeatures.push("route optimization");
+  if (status.routes) availableFeatures.push("logistics planning");
+
+  if (availableFeatures.length > 0) {
+    content += `I currently have access to: ${availableFeatures.join(", ")}. `;
+  } else {
+    content += "I'm connecting to your supply chain data. ";
+  }
+
+  content += "What would you like to explore?";
+
+  const suggestions = [];
+  if (status.metrics) suggestions.push("What's the demand trend?");
+  if (status.forecast) suggestions.push("Show forecasting accuracy");
+  if (status.routes) suggestions.push("Analyze routes");
+  if (status.vehicles) suggestions.push("Optimize fleet");
+  suggestions.push("Check data status");
+
+  return {
+    role: "assistant",
+    content,
+    suggestions,
+    timestamp: new Date(),
+  };
+};
+
 export default function Insights() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      content:
-        "Hello! I'm your AI assistant for supply chain intelligence. I can help you with demand forecasting, inventory optimization, route planning, and data analysis. I have access to your current supply chain data and can provide insights based on real metrics and forecasts. What would you like to explore?",
-      suggestions: ["What's the current demand trend?", "Show me inventory optimization suggestions", "Analyze route efficiency", "Check forecasting accuracy"],
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [dataStatus, setDataStatus] = useState<DataStatus>({
+    metrics: false,
+    forecast: false,
+    locations: false,
+    vehicles: false,
+    routes: false,
+  });
+  const [isCheckingData, setIsCheckingData] = useState(true);
 
   useEffect(() => {
     const initializeSession = async () => {
@@ -38,7 +79,59 @@ export default function Insights() {
       }
     };
 
+    const checkDataAvailability = async () => {
+      setIsCheckingData(true);
+      const status: DataStatus = {
+        metrics: false,
+        forecast: false,
+        locations: false,
+        vehicles: false,
+        routes: false,
+      };
+
+      try {
+        await apiService.getMetrics();
+        status.metrics = true;
+      } catch (error) {
+        console.log("Metrics not available:", error);
+      }
+
+      try {
+        await apiService.runForecast({
+          crop_type: "rice",
+          region: "malang regency",
+          season: "wet-season",
+        });
+        status.forecast = true;
+      } catch (error) {
+        console.log("Forecast data not available:", error);
+      }
+
+      try {
+        await apiService.getLocations();
+        status.locations = true;
+      } catch (error) {
+        console.log("Locations not available:", error);
+      }
+
+      try {
+        await apiService.getVehicles();
+        status.vehicles = true;
+      } catch (error) {
+        console.log("Vehicles not available:", error);
+      }
+
+      status.routes = status.locations && status.vehicles;
+
+      setDataStatus(status);
+      setIsCheckingData(false);
+
+      const initialMessage = getInitialMessage(status);
+      setMessages([initialMessage]);
+    };
+
     initializeSession();
+    checkDataAvailability();
   }, []);
 
   const handleSend = async (messageText?: string) => {
@@ -66,7 +159,7 @@ export default function Insights() {
       const request: AIInsightRequest = {
         query: textToSend,
         crop_type: "rice",
-        region: "jawa-barat",
+        region: "malang regency",
         season: "wet-season",
         session_id: sessionId || undefined,
       };
@@ -114,7 +207,7 @@ export default function Insights() {
   };
 
   return (
-    <div className="space-y-2 md:space-y-6 p-2 md:p-6 animate-fade-in">
+    <div className="space-y-2 md:space-y-6 p-2 md:pl-6 md:pr-6 md:pt-6 animate-fade-in">
       <div>
         <h1 className="text-2xl md:text-3xl font-bold mb-2">AI Insights & Recommendations</h1>
         <p className="text-sm md:text-base text-muted-foreground">Conversational intelligence powered by supply chain analytics</p>
@@ -122,24 +215,27 @@ export default function Insights() {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-2 md:gap-6">
         {/* Main Chat Area */}
-        <Card className="lg:col-span-3 glass-panel flex flex-col">
+        <Card className="lg:col-span-3 glass-panel flex flex-col max-h-[90vh]">
           <CardHeader className="border-b border-border">
             <CardDescription className="text-xs md:text-sm">Tip: Ask questions about your supply chain data!</CardDescription>
           </CardHeader>
 
-          <CardContent className="flex-1 flex flex-col p-0">
+          <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
             <MessageList messages={messages} onSuggestionClick={handleSuggestionClick} />
             <ChatInput input={input} onInputChange={setInput} onSend={handleSend} isLoading={isLoading} />
           </CardContent>
         </Card>
 
         {/* Quick Actions Sidebar */}
-        <div className="space-y-4">
-          <QuickActions onActionClick={handleQuickActionClick} />
-          <Card className="glass-panel">
-            <RecentInsights />
-          </Card>
-        </div>
+        <ScrollArea className="max-h-[90vh]">
+          <div className="space-y-4">
+            <QuickActions onActionClick={handleQuickActionClick} />
+
+            <Card className="glass-panel">
+              <RecentInsights />
+            </Card>
+          </div>
+        </ScrollArea>
       </div>
     </div>
   );

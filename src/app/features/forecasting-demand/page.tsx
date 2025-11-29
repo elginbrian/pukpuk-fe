@@ -50,7 +50,7 @@ export default function DemandForecasting() {
         <ModelConfiguration onRunForecast={handleRunForecast} loading={loading} />
       </div>
 
-      <ScenarioSimulation onSimulate={handleScenarioSimulation} loading={loading} />
+      {/* <ScenarioSimulation onSimulate={handleScenarioSimulation} loading={loading} /> */}
     </div>
   );
 }

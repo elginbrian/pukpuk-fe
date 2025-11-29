@@ -1,167 +1,209 @@
-import { useEffect, useRef } from "react";
-import L, { Map } from "leaflet";
-import "leaflet-routing-machine";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import L, { Map, Polyline } from "leaflet";
+
+import { RouteOptimizationResponse } from "../types";
+import { apiService } from "../services/api";
 
 interface RouteMapProps {
   origin: string;
   destination: string;
+  routeOptions: RouteOptimizationResponse | null;
+  selectedRoute: "fastest" | "cheapest" | "greenest";
 }
 
-const RouteMap = ({ origin, destination }: RouteMapProps) => {
+const RouteMap = ({ origin, destination, routeOptions, selectedRoute }: RouteMapProps) => {
   const mapRef = useRef<Map | null>(null);
-  const routingControlRef = useRef<any>(null);
+  const routeLayerRef = useRef<Polyline | null>(null);
+  const [locations, setLocations] = useState<any[]>([]);
+  const [mapSize, setMapSize] = useState<"small" | "medium" | "large">("medium");
 
-  // Location coordinates mapping
-  const locations = {
-    "plant-a": [-6.3074, 107.3103], // Karawang
-    "plant-b": [-7.1612, 112.6535], // Gresik
-    "warehouse-a": [-6.2088, 106.8166], // Jakarta
-    "warehouse-b": [-6.5950, 106.8166], // Bogor
-    "kios-bandung": [-6.9175, 107.6191], // Bandung
-    "kios-tasikmalaya": [-7.3156, 108.2048], // Tasikmalaya
-    "kios-sumedang": [-6.9858, 107.8148], // Sumedang
-    "kios-garut": [-7.2070, 107.9177], // Garut
-    "kios-sukabumi": [-6.9271, 106.9297], // Sukabumi
-    "kios-cianjur": [-6.7223, 107.0472], // Cianjur
-  };
+  // Fetch locations from backend
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const locationData = await apiService.getLocations();
+        setLocations(locationData);
+      } catch (error) {
+        console.error("Failed to fetch locations:", error);
+        setLocations([]);
+      }
+    };
+
+    fetchLocations();
+  }, []);
 
   // Update routing when selections change
-  const updateRouting = () => {
-    if (!mapRef.current) return;
-
-    // Remove existing routing control
-    if (routingControlRef.current) {
-      mapRef.current.removeControl(routingControlRef.current);
+  const updateRouting = async () => {
+    if (!mapRef.current || !routeOptions) {
+      return;
     }
 
-    // Create waypoints based on current selections
-    const waypoints = [
-      L.latLng(locations[origin as keyof typeof locations] as [number, number]),
-      L.latLng(locations["warehouse-b" as keyof typeof locations] as [number, number]), // Fixed waypoint
-      L.latLng(locations["kios-bandung" as keyof typeof locations] as [number, number]), // Fixed waypoint
-      L.latLng(locations[destination as keyof typeof locations] as [number, number]),
-    ];
+    if (routeLayerRef.current) {
+      try {
+        mapRef.current.removeLayer(routeLayerRef.current);
+      } catch (error) {
+        console.warn("Error removing route layer:", error);
+      }
+      routeLayerRef.current = null;
+    }
 
-    // Create new routing control
-    routingControlRef.current = (L as any).Routing.control({
-      waypoints: waypoints,
-      routeWhileDragging: false,
-      createMarker: () => null, // Don't create default markers, we have our own
-      lineOptions: {
-        styles: [{ color: 'hsl(var(--primary))', weight: 4, opacity: 0.8 }],
-      },
-      show: false, // Hide the routing instructions panel
-      addWaypoints: false, // Disable adding waypoints by clicking
-    }).addTo(mapRef.current);
+    const originLoc = locations.find((loc) => loc.code === origin);
+    const destLoc = locations.find((loc) => loc.code === destination);
+
+    if (!originLoc || !destLoc) {
+      console.warn("Origin or destination location not found");
+      return;
+    }
+
+    try {
+      const routeData = await apiService.getRouteDirections(originLoc.coordinates as [number, number], destLoc.coordinates as [number, number], selectedRoute);
+
+      let routeCoordinates: [number, number][];
+
+      if (routeData.geometry && routeData.geometry.coordinates) {
+        // OSRM format: [lng, lat]
+        routeCoordinates = routeData.geometry.coordinates.map((coord: [number, number]) => [coord[1], coord[0]] as [number, number]);
+      } else {
+        // Fallback to straight line
+        routeCoordinates = [originLoc.coordinates, destLoc.coordinates];
+      }
+
+      const routePoints: L.LatLng[] = routeCoordinates.map((coord) => L.latLng(coord[0], coord[1]));
+
+      // Use different colors/styles based on route type and whether it's a real route or fallback
+      const isFallback = routeData.properties?.fallback;
+      let routeColor = "hsl(var(--primary))";
+      let weight = 4;
+
+      if (selectedRoute === "fastest") {
+        routeColor = isFallback ? "#ef4444" : "#3b82f6";
+        weight = 5;
+      } else if (selectedRoute === "cheapest") {
+        routeColor = isFallback ? "#ef4444" : "#10b981";
+      } else if (selectedRoute === "greenest") {
+        routeColor = isFallback ? "#ef4444" : "#059669";
+      }
+
+      routeLayerRef.current = L.polyline(routePoints, {
+        color: routeColor,
+        weight: weight,
+        opacity: 0.8,
+        dashArray: isFallback ? "10, 10" : undefined,
+      }).addTo(mapRef.current);
+
+      mapRef.current.fitBounds(routeLayerRef.current.getBounds(), { padding: [20, 20] });
+    } catch (error) {
+      console.error("Error creating route polyline:", error);
+
+      const routePoints: L.LatLng[] = [L.latLng(originLoc.coordinates), L.latLng(destLoc.coordinates)];
+
+      routeLayerRef.current = L.polyline(routePoints, {
+        color: "#ef4444", // Red to indicate error/fallback
+        weight: 4,
+        opacity: 0.8,
+        dashArray: "10, 10", // Dashed line to indicate fallback
+      }).addTo(mapRef.current);
+
+      mapRef.current.fitBounds(routeLayerRef.current.getBounds(), { padding: [20, 20] });
+    }
   };
 
   useEffect(() => {
+    if (!routeOptions) {
+      return;
+    }
+
     let map: Map | undefined;
     if (!(document.getElementById("route-map") as any)?._leaflet_id) {
-      map = L.map("route-map").setView([-7.5, 112.5], 8);
+      const originLoc = locations.find((loc) => loc.code === origin);
+      const centerCoords = originLoc ? originLoc.coordinates : [-7.7956, 110.3695]; // Default to Yogyakarta if origin not found
+
+      map = L.map("route-map").setView([centerCoords[0], centerCoords[1]], 8);
       mapRef.current = map;
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(map);
 
-      // Add custom markers for all locations
-      const plantIcon = L.icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
+      locations.forEach((location) => {
+        if (location.code === origin || location.code === destination) {
+          const icon = L.icon({
+            iconUrl: location.icon_url,
+            shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41],
+          });
+
+          L.marker(location.coordinates, { icon }).addTo(map!).bindPopup(location.name);
+        }
       });
 
-      const warehouseIcon = L.icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
-      });
-
-      const kiosIcon = L.icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
-      });
-
-      // Plant locations
-      L.marker([-6.3074, 107.3103], { icon: plantIcon })
-        .addTo(map)
-        .bindPopup('Plant A - Karawang');
-
-      L.marker([-7.1612, 112.6535], { icon: plantIcon })
-        .addTo(map)
-        .bindPopup('Plant B - Gresik');
-
-      // Warehouse locations
-      L.marker([-6.2088, 106.8166], { icon: warehouseIcon })
-        .addTo(map)
-        .bindPopup('Warehouse A - Jakarta');
-
-      L.marker([-6.5950, 106.8166], { icon: warehouseIcon })
-        .addTo(map)
-        .bindPopup('Warehouse B - Bogor');
-
-      // Kios locations
-      L.marker([-6.9175, 107.6191], { icon: kiosIcon })
-        .addTo(map)
-        .bindPopup('Kios Bandung');
-
-      L.marker([-7.3156, 108.2048], { icon: kiosIcon })
-        .addTo(map)
-        .bindPopup('Kios Tasikmalaya');
-
-      L.marker([-6.9858, 107.8148], { icon: kiosIcon })
-        .addTo(map)
-        .bindPopup('Kios Sumedang');
-
-      L.marker([-7.2070, 107.9177], { icon: kiosIcon })
-        .addTo(map)
-        .bindPopup('Kios Garut');
-
-      L.marker([-6.9271, 106.9297], { icon: kiosIcon })
-        .addTo(map)
-        .bindPopup('Kios Sukabumi');
-
-      L.marker([-6.7223, 107.0472], { icon: kiosIcon })
-        .addTo(map)
-        .bindPopup('Kios Cianjur');
-
-      // Initial routing
-      updateRouting();
+      setTimeout(() => {
+        try {
+          map!.invalidateSize();
+        } catch (err) {}
+      }, 150);
     }
+
+    updateRouting();
+
     return () => {
-      if (map) {
-        map.remove();
-        mapRef.current = null;
+      if (mapRef.current) {
+        try {
+          mapRef.current.remove();
+          mapRef.current = null;
+        } catch (error) {
+          console.warn("Error cleaning up map:", error);
+        }
       }
     };
-  }, []);
+  }, [origin, destination, routeOptions, selectedRoute, locations]);
+
+  const minHeights = {
+    small: 240,
+    medium: 360,
+    large: 480,
+  } as const;
 
   useEffect(() => {
-    updateRouting();
-  }, [origin, destination]);
+    if (mapRef.current) {
+      setTimeout(() => {
+        try {
+          mapRef.current!.invalidateSize();
+        } catch (err) {}
+      }, 150);
+    }
+  }, [mapSize]);
 
   return (
-    <div
-      id="route-map"
-      style={{
-        width: "100%",
-        height: "100%",
-        minHeight: 400,
-        borderRadius: '0.5rem',
-        overflow: 'hidden'
-      }}
-    />
+    <div className="w-full max-w-full rounded-lg overflow-hidden relative">
+      {/* Map size control (top-right) */}
+      <div className="absolute top-3 right-3 z-20">
+        <div className="bg-muted/60 backdrop-blur-sm text-xs rounded-md px-2 py-1 pb-2 flex items-center gap-1">
+          <button aria-pressed={mapSize === "small"} onClick={() => setMapSize("small")} className={`px-2 py-1 rounded ${mapSize === "small" ? "bg-border/20" : "hover:bg-muted/40"}`}>
+            S
+          </button>
+          <button aria-pressed={mapSize === "medium"} onClick={() => setMapSize("medium")} className={`px-2 py-1 rounded ${mapSize === "medium" ? "bg-border/20" : "hover:bg-muted/40"}`}>
+            M
+          </button>
+          <button aria-pressed={mapSize === "large"} onClick={() => setMapSize("large")} className={`px-2 py-1 rounded ${mapSize === "large" ? "bg-border/20" : "hover:bg-muted/40"}`}>
+            L
+          </button>
+        </div>
+      </div>
+
+      <div
+        id="route-map"
+        className="w-full h-full"
+        style={{
+          minHeight: minHeights[mapSize],
+        }}
+      />
+    </div>
   );
 };
 
