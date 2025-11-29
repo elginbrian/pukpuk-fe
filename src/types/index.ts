@@ -151,3 +151,7 @@ export interface RouteConfiguration {
   cheapest_path: string[];
   greenest_path: string[];
 }
+
+export interface RegionMappings {
+  [key: string]: string;
+}
