@@ -4,6 +4,7 @@ import { TrendingUp, AlertTriangle } from "lucide-react";
 
 interface RegionalInsight {
   name: string;
+  code: string;
   demand: string;
   confidence: number;
   trend: "up" | "down" | "stable";
@@ -12,9 +13,11 @@ interface RegionalInsight {
 
 interface RegionalInsightsProps {
   regions: RegionalInsight[];
+  onRegionClick?: (code: string, name: string) => void;
+  isDistrictLevel?: boolean;
 }
 
-export function RegionalInsights({ regions }: RegionalInsightsProps) {
+export function RegionalInsights({ regions, onRegionClick, isDistrictLevel = false }: RegionalInsightsProps) {
   return (
     <Card className="glass-panel">
       <CardHeader>
@@ -24,9 +27,13 @@ export function RegionalInsights({ regions }: RegionalInsightsProps) {
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {regions.map((region) => (
-            <Card key={region.name} className="hover-glow cursor-pointer transition-all border-primary/10">
+            <Card
+              key={region.name}
+              className={`hover-glow transition-all border-primary/10 ${!isDistrictLevel && onRegionClick ? "cursor-pointer" : ""}`}
+              onClick={() => !isDistrictLevel && onRegionClick && onRegionClick(region.code, region.name)}
+            >
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">{region.name}</CardTitle>
+                <CardTitle className="text-sm font-medium">{region.name.toUpperCase()}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div>

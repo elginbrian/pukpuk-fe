@@ -29,6 +29,7 @@ export default function Heatmap() {
   const [regionalInsights, setRegionalInsights] = useState<
     Array<{
       name: string;
+      code: string;
       demand: string;
       confidence: number;
       trend: "up" | "down" | "stable";
@@ -45,6 +46,7 @@ export default function Heatmap() {
       setRegionalInsights(
         response.regionalInsights.map((insight) => ({
           ...insight,
+          code: insight.code,
           trend: insight.trend as "up" | "down" | "stable",
           risk: insight.risk as "low" | "medium" | "high",
         }))
@@ -116,7 +118,11 @@ export default function Heatmap() {
       </div>
 
       {/* Region Details */}
-      <RegionalInsights regions={regionalInsights} />
+      <RegionalInsights
+        regions={regionalInsights}
+        onRegionClick={handleRegionClick}
+        isDistrictLevel={currentLevel !== "pulau" && currentLevel !== "indonesia" && ((currentLevel.length >= 4 && /^\d+$/.test(currentLevel)) || (!/^\d+$/.test(currentLevel) && currentLevel !== "pulau" && currentLevel !== "indonesia"))}
+      />
     </div>
   );
 }

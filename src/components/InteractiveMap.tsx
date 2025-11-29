@@ -221,7 +221,7 @@ export default function InteractiveMap({ level, layerType, onClickRegion, breadc
 
         {breadcrumbs &&
           breadcrumbs.map((crumb, index) => (
-            <div key={crumb.code} className="flex items-center gap-2">
+            <div key={`${crumb.code}-${index}`} className="flex items-center gap-2">
               <ChevronRight className="w-3 h-3 text-muted-foreground/50" />
               <button onClick={() => onBreadcrumbClick && onBreadcrumbClick(crumb.code, crumb.name, index)} className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors">
                 {crumb.name}

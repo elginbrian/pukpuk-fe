@@ -138,7 +138,7 @@ class ApiService {
     layer: string
   ): Promise<{
     mapAnalytics: Record<string, { status: string; value: number; label: string }>;
-    regionalInsights: Array<{ name: string; demand: string; confidence: number; trend: string; risk: string }>;
+    regionalInsights: Array<{ name: string; code: string; demand: string; confidence: number; trend: string; risk: string }>;
   }> {
     const response = await this.axiosInstance.get(`/demand-heatmap/demand-data`, {
       params: { level, mode, layer },
