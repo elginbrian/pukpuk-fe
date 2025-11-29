@@ -1,14 +1,15 @@
 "use client";
 
-import { Map, Package, MessageSquare, TrendingUp, Navigation } from "lucide-react";
+import { Map, Package, MessageSquare, TrendingUp, Navigation, Zap } from "lucide-react";
 import { NavLink } from "./NavLink";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "./ui/sidebar";
 
 const navigationItems = [
   { title: "Demand Forecasting", url: "/features/forecasting-demand", icon: TrendingUp },
   { title: "Route Optimization", url: "/features/route-optimization", icon: Navigation },
-  { title: "Demand Heatmap", url: "/features/demand-heatmap", icon: Map },
+  { title: "Demand Chloropleth", url: "/features/demand-chloropleth", icon: Map },
   { title: "Inventory Monitor", url: "/features/inventory-monitor", icon: Package },
+  { title: "Create Action", url: "/features/create-action", icon: Zap},
   { title: "AI Insights", url: "/features/ai-insights", icon: MessageSquare },
 ];
 

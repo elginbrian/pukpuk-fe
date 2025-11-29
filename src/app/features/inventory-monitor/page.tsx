@@ -2,18 +2,59 @@
 
 import { useState } from "react";
 import { useAlerts } from "../../../context/AlertContext";
+import { useToast } from "../../../hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/table";
 import { StatusBadge } from "../../../components/StatusBadge";
 import { Button } from "../../../components/ui/button";
-import { AlertCircle, ArrowRight, Package, TrendingDown, Warehouse, X, Calendar, TrendingUp, MapPin, Truck } from "lucide-react";
+import { AlertCircle, ArrowRight, Package, TrendingDown, Warehouse, Calendar, TrendingUp, MapPin, Truck } from "lucide-react";
 import { Progress } from "../../../components/ui/progress";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "../../../components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "../../../components/ui/sheet";
 import { Separator } from "../../../components/ui/separator";
+import { useRouter } from "next/navigation";
 
 export default function Inventory() {
+  const router = useRouter();
   const { alerts, selectedAlert, setSelectedAlert } = useAlerts();
+  const { toast } = useToast();
   const [selectedInventory, setSelectedInventory] = useState<number | null>(null);
+  const [selectedAction, setSelectedAction] = useState<number | null>(null);
+
+  const suggestedActions = [
+    {
+      id: 0,
+      title: "Reallocate Stock",
+      description: "Transfer 120 tons from Warehouse A",
+      detail: "Estimated cost: Rp 8,500,000"
+    },
+    {
+      id: 1,
+      title: "Schedule Emergency Delivery",
+      description: "Priority shipment within 24 hours",
+      detail: "Via fastest route (Route B)"
+    }
+  ];
+
+  const handleNewAction = () => {
+    router.push("/features/create-action");
+  }
+
+  const handleApprove = () => {
+    if (selectedAction === null) {
+      toast({
+        title: "No Action Selected",
+        description: "Please select an action before approving.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const action = suggestedActions.find(a => a.id === selectedAction);
+    toast({
+      title: "Action Approved",
+      description: `"${action?.title}" has been approved successfully.`,
+    });
+  };
 
   const inventoryData = [
     {
@@ -351,31 +392,49 @@ export default function Inventory() {
                     <CardTitle className="text-lg">Suggested Actions</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <div className="flex items-start gap-3 p-3 rounded-lg bg-card/50 border border-border">
-                      <Truck className="h-5 w-5 text-primary mt-0.5" />
-                      <div className="flex-1 space-y-1">
-                        <p className="text-sm font-medium">Reallocate Stock</p>
-                        <p className="text-xs text-muted-foreground">Transfer 120 tons from Warehouse A</p>
-                        <p className="text-xs text-primary">Estimated cost: Rp 8,500,000</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3 p-3 rounded-lg bg-card/50 border border-border">
-                      <Calendar className="h-5 w-5 text-primary mt-0.5" />
-                      <div className="flex-1 space-y-1">
-                        <p className="text-sm font-medium">Schedule Emergency Delivery</p>
-                        <p className="text-xs text-muted-foreground">Priority shipment within 24 hours</p>
-                        <p className="text-xs text-primary">Via fastest route (Route B)</p>
-                      </div>
-                    </div>
+                    {suggestedActions.map((action) => {
+                      const isSelected = selectedAction === action.id;
+                      const IconComponent = action.title.toLowerCase().includes('reallocate') 
+                        ? Truck 
+                        : action.title.toLowerCase().includes('schedule') || action.title.toLowerCase().includes('reschedule')
+                        ? Calendar
+                        : Truck;
+                      
+                      return (
+                        <div 
+                          key={action.id}
+                          className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
+                            isSelected 
+                              ? 'bg-green-500/20 border-green-500' 
+                              : 'bg-card/50 border-border hover:bg-card/70'
+                          }`}
+                          onClick={() => {
+                            setSelectedAction(isSelected ? null : action.id);
+                          }}
+                        >
+                          <IconComponent className={`h-5 w-5 mt-0.5 ${isSelected ? 'text-green-500' : 'text-primary'}`} />
+                          <div className="flex-1 space-y-1">
+                            <p className={`text-sm font-medium ${isSelected ? 'text-green-500' : ''}`}>{action.title}</p>
+                            <p className="text-xs text-muted-foreground">{action.description}</p>
+                            <p className={`text-xs ${isSelected ? 'text-green-500' : 'text-primary'}`}>{action.detail}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </CardContent>
                 </Card>
 
                 {/* Action Buttons */}
-                <div className="flex gap-3">
-                  <Button className="flex-1">Approve Reallocation</Button>
+                <div className="flex flex-col fle gap-3">
+                  <div className="flex gap-3">
+                  <Button className="flex-1" onClick={handleApprove}>Approve</Button>
                   <Button variant="outline" className="flex-1">
-                    Schedule Review
+                    Review
                   </Button>
+                  </div>
+                  <div>
+                    <Button variant="secondary"className="flex w-full" onClick={handleNewAction}>New Action</Button>
+                  </div>
                 </div>
               </div>
             </>
@@ -519,7 +578,6 @@ export default function Inventory() {
 
                 {/* Action Buttons */}
                 <div className="flex gap-3">
-                  <Button className="flex-1">Request Transfer</Button>
                   <Button variant="outline" className="flex-1">
                     View on Map
                   </Button>
