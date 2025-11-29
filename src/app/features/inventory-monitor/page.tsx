@@ -56,6 +56,10 @@ export default function Inventory() {
     });
   };
 
+  const handleViewOnMap = () =>{
+    router.push("/features/demand-chloropleth")
+  }
+
   const inventoryData = [
     {
       location: "Plant A - Jakarta",
@@ -578,7 +582,7 @@ export default function Inventory() {
 
                 {/* Action Buttons */}
                 <div className="flex gap-3">
-                  <Button variant="outline" className="flex-1">
+                  <Button variant="outline" className="flex-1" onClick ={handleViewOnMap}>
                     View on Map
                   </Button>
                 </div>

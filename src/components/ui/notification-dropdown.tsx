@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { StatusBadge } from "../StatusBadge";
 import { cn } from "../../utils/utils";
+import { useRouter } from "next/navigation";
 
 interface Alert {
   type: string;
@@ -22,6 +23,12 @@ interface NotificationDropdownProps {
 export function NotificationDropdown({ alerts, onAlertClick }: NotificationDropdownProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  const handleViewAll = () => {
+    router.push("/features/notifications");
+    setIsOpen(false);
+  }
 
   // Close dropdown when clicking outside
   React.useEffect(() => {
@@ -95,7 +102,7 @@ export function NotificationDropdown({ alerts, onAlertClick }: NotificationDropd
               </div>
             ) : (
               <div className="divide-y divide-border">
-                {alerts.map((alert, index) => (
+                {alerts.slice(0, 3).map((alert, index) => (
                   <div
                     key={index}
                     className="p-4 hover:bg-accent/50 transition-colors cursor-pointer"
@@ -142,7 +149,7 @@ export function NotificationDropdown({ alerts, onAlertClick }: NotificationDropd
                 variant="ghost"
                 size="sm"
                 className="w-full text-xs"
-                onClick={() => setIsOpen(false)}
+                onClick={ handleViewAll}
               >
                 View All Alerts
               </Button>
