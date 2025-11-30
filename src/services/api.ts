@@ -18,6 +18,7 @@ import {
   Location,
   Vehicle,
   RouteConfiguration,
+  RegionMappingsResponse,
 } from "../types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
@@ -122,10 +123,11 @@ class ApiService {
     return response.data;
   }
 
-  async getRegionMappings(): Promise<Record<string, string>> {
-    const response = await this.axiosInstance.get<Record<string, string>>("/demand-heatmap/region-mappings");
-    return response.data;
-  }
+async getRegionMappings(): Promise<RegionMappingsResponse> {
+  // Ganti Record<string, string> menjadi RegionMappingsResponse
+  const response = await this.axiosInstance.get<RegionMappingsResponse>("/demand-heatmap/region-mappings");
+  return response.data;
+}
 
   async getGeoJson(filename: string): Promise<any> {
     const response = await this.axiosInstance.get(`/demand-heatmap/maps/${filename}`);

@@ -155,3 +155,8 @@ export interface RouteConfiguration {
 export interface RegionMappings {
   [key: string]: string;
 }
+
+export interface RegionMappingsResponse {
+  files: Record<string, string>; 
+  names: Record<string, string>;
+}
