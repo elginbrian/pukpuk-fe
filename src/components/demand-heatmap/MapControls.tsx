@@ -73,16 +73,7 @@ export function MapControls({ viewMode, selectedLayer, currentLevel, timeRange, 
           </div>
         )}
 
-        <div className="space-y-2 pt-4 border-t border-border">
-          <label className="block text-sm font-medium mb-1">Intensity Scale</label>
-          <div className="space-y-1">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-muted-foreground">Low Risk</span>
-              <span className="text-muted-foreground">High Risk</span>
-            </div>
-            <div className={`h-4 rounded bg-linear-to-r ${layerOptions.find((l) => l.value === selectedLayer)?.color}`} />
-          </div>
-        </div>
+        
       </CardContent>
     </Card>
   );

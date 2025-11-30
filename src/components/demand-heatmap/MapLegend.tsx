@@ -9,19 +9,19 @@ export function MapLegend({ viewMode }: MapLegendProps) {
       <div className="space-y-1.5 text-muted-foreground font-medium">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-destructive rounded-full shadow-sm border border-border"></div>
-          <span>Critical (Defisit)</span>
+          <span>Critical</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-warning rounded-full shadow-sm border border-border"></div>
-          <span>Warning (Menipis)</span>
+          <span>Warning</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-success rounded-full shadow-sm border border-border"></div>
-          <span>Safe (Aman)</span>
+          <span>Safe</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-accent rounded-full shadow-sm border border-border"></div>
-          <span>Overstock (Dead Stock)</span>
+          <div className="w-3 h-3 bg-purple-800 rounded-full shadow-sm border border-border"></div>
+          <span>Overstock</span>
         </div>
       </div>
     </div>

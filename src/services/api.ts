@@ -20,7 +20,7 @@ import {
   RouteConfiguration,
 } from "../types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 class ApiService {
   private axiosInstance: AxiosInstance;
@@ -122,8 +122,8 @@ class ApiService {
     return response.data;
   }
 
-  async getRegionMappings(): Promise<Record<string, string>> {
-    const response = await this.axiosInstance.get<Record<string, string>>("/demand-heatmap/region-mappings");
+async getRegionMappings(): Promise<{ files: Record<string, string>; names: Record<string, string> }> {
+    const response = await this.axiosInstance.get("/demand-heatmap/region-mappings");
     return response.data;
   }
 
