@@ -41,7 +41,7 @@ export function ForecastChart({ data = defaultData, loading = false }: ForecastC
   const xInterval = chartData.length > preferredTicks ? Math.floor(chartData.length / preferredTicks) : 0;
 
   return (
-    <Card className="lg:col-span-2 glass-panel">
+    <Card className="lg:col-span-2">
       <CardHeader>
         <CardTitle>Demand Forecast - Time Series</CardTitle>
         <div className="flex items-center gap-4 mt-2 pt-2">
@@ -50,7 +50,7 @@ export function ForecastChart({ data = defaultData, loading = false }: ForecastC
             <span className="text-xs">Actual Demand</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-emerald-500" />
+            <div className="w-3 h-3 rounded-full bg-logo-primary" />
             <span className="text-xs">Predicted Demand</span>
           </div>
           <div className="flex items-center gap-2">
@@ -75,12 +75,12 @@ export function ForecastChart({ data = defaultData, loading = false }: ForecastC
                       <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="colorPredicted" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#a8d945" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#a8d945" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="colorConfidence" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.2} />
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0.05} />
+                      <stop offset="5%" stopColor="#a8d945" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="#a8d945" stopOpacity={0.05} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted-foreground))" opacity={0.3} />

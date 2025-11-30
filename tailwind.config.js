@@ -23,9 +23,16 @@ export default {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
         },
+        logo: {
+          primary: "hsl(var(--logo-primary))",
+        },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
+        },
+        tersier: {
+          DEFAULT: "hsl(var(--tersier))",
+          foreground: "hsl(var(--tersier-foreground))",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",

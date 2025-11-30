@@ -8,7 +8,9 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 200 20% 98%;
+    --background: 90 25% 96%;
+    --background-gradient-start: 90 50% 95%;
+    --background-gradient-end: 0 0% 100%;
     --foreground: 210 40% 12%;
 
     --card: 0 0% 100%;
@@ -17,11 +19,15 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 210 40% 12%;
 
-    --primary: 156 72% 47%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 120 100% 20%;
+    --primary-foreground: 122 38% 17%;
+    --logo-primary: 80 66% 56%;
 
     --secondary: 190 95% 33%;
     --secondary-foreground: 0 0% 100%;
+
+    --tersier: 131 39% 22%;
+    --tersier-foreground: 0 0% 100%;
 
     --muted: 210 25% 92%;
     --muted-foreground: 210 15% 45%;
@@ -39,7 +45,7 @@ All colors MUST be HSL.
 
     --border: 210 25% 88%;
     --input: 210 25% 88%;
-    --ring: 156 72% 47%;
+    --ring: 131 39% 22%;
 
     --radius: 0.75rem;
 
@@ -48,11 +54,11 @@ All colors MUST be HSL.
     --glass-bg: 0 0% 100% / 0.6;
     --glass-border: 210 25% 88% / 0.3;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 210 40% 12%;
-    --sidebar-primary: 156 72% 47%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 94 40% 12%;
+    --sidebar-primary: 131 39% 22%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 25% 96%;
+    --sidebar-accent: 92 62% 92%;
     --sidebar-accent-foreground: 210 40% 12%;
     --sidebar-border: 210 25% 88%;
     --sidebar-ring: 156 72% 47%;
@@ -63,25 +69,31 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 209 34% 12%;
+    --background: 160 10% 11%;
+    --background-gradient-start: 150 10% 11%;
+    --background-gradient-end: 150 10% 11%;
     --foreground: 0 0% 95%;
 
-    --card: 210 29% 16%; 
+    --card: 160 5% 11%; 
     --card-foreground: 0 0% 95%;
 
     --popover: 210 50% 12%;
     --popover-foreground: 0 0% 95%;
 
-    --primary: 156 72% 47%;
-    --primary-foreground: 210 65% 10%;
+    --primary: 120 100% 20%;
+    --primary-foreground: 122 38% 17%;
+    --logo-primary: 80 66% 56%;
 
     --secondary: 190 95% 33%;
     --secondary-foreground: 0 0% 100%;
 
+    --tersier:80 66% 56%;
+    --tersier-foreground: 0 0% 95%;
+
     --muted: 210 50% 18%;
     --muted-foreground: 210 15% 65%;
 
-    --accent: 156 65% 45%;
+    --accent: 122 38% 17%;
     --accent-foreground: 0 0% 95%;
 
     --destructive: 0 85% 62%;
@@ -94,18 +106,18 @@ All colors MUST be HSL.
 
     --border: 210 50% 20%;
     --input: 210 50% 20%;
-    --ring: 156 72% 47%;
+    --ring: 80 66% 56%;
 
     --navy-deep: 210 65% 8%;
     --navy-medium: 210 50% 15%;
     --glass-bg: 210 50% 12% / 0.6;
     --glass-border: 0 0% 100% / 0.1;
 
-    --sidebar-background: 210 60% 8%;
+    --sidebar-background: 148 35% 13%;
     --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 156 72% 47%;
+    --sidebar-primary: 80 66% 56%;
     --sidebar-primary-foreground: 210 65% 10%;
-    --sidebar-accent: 210 50% 15%;
+    --sidebar-accent: 160 11% 11%;
     --sidebar-accent-foreground: 0 0% 95%;
     --sidebar-border: 210 50% 20%;
     --sidebar-ring: 156 72% 47%;
@@ -121,7 +133,12 @@ All colors MUST be HSL.
   }
 
   body {
-    background-color: hsl(var(--background));
+    background: linear-gradient(
+      180deg,
+      hsl(var(--background-gradient-start)) 0%,
+      hsl(var(--background-gradient-end)) 100%
+    );
+    min-height: 100vh;
     color: hsl(var(--foreground));
     font-family: var(--font-geist-sans), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;

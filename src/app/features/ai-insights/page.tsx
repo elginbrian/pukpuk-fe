@@ -227,7 +227,7 @@ export default function Insights() {
         </Card>
 
         {/* Quick Actions Sidebar */}
-        <ScrollArea className="max-h-[90vh]">
+        <ScrollArea className="max-h-[90vh] bg-transparent">
           <div className="space-y-4">
             <QuickActions onActionClick={handleQuickActionClick} />
 

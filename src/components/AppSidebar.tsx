@@ -1,8 +1,9 @@
 "use client";
 
 import { Map, Package, MessageSquare, TrendingUp, Navigation, Zap } from "lucide-react";
+import Image from "next/image";
 import { NavLink } from "./NavLink";
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "./ui/sidebar";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "./ui/sidebar";
 
 const navigationItems = [
   { title: "Demand Forecasting", url: "/features/forecasting-demand", icon: TrendingUp },
@@ -20,7 +21,10 @@ export function AppSidebar() {
   return (
     <Sidebar className={isCollapsed ? "w-28" : "w-64"} collapsible="icon">
       <SidebarContent>
-        <div className="h-16 px-6 py-4 border-b border-sidebar-border flex items-center">{!isCollapsed && <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">PUKPUK.COM</h1>}</div>
+        <div className={`h-16 border-b border-sidebar-border flex items-center ${isCollapsed ? 'justify-center px-2' : 'gap-3 px-6'} py-4`}>
+          <Image src="/Logo_PukPuk.png" alt="PukPuk Logo" width={40} height={40} className="object-contain" />
+          {!isCollapsed && <h1 className="text-2xl font-bold" style={{ color: '#a8d945' }}>Pukpuk</h1>}
+        </div>
 
         <SidebarGroup>
           <SidebarGroupContent>

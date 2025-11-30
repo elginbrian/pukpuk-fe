@@ -21,7 +21,7 @@ const layerOptions = [
 
 export function MapControls({ viewMode, selectedLayer, currentLevel, timeRange, onViewModeChange, onLayerChange, onTimeRangeChange }: MapControlsProps) {
   return (
-    <Card className="lg:col-span-1 glass-panel">
+    <Card className="lg:col-span-1">
       <CardHeader>
         <CardTitle className="text-lg">Map Controls</CardTitle>
         <CardDescription>Configure AI forecast parameters</CardDescription>

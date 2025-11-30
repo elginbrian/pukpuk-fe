@@ -214,7 +214,7 @@ export default function InteractiveMap({ level, layerType, onClickRegion, breadc
       <div className="absolute top-4 left-4 z-[1000] flex items-center gap-2 bg-background/90 backdrop-blur-sm p-2 rounded-lg shadow-md border animate-in fade-in slide-in-from-top-2">
         <button
           onClick={() => onBreadcrumbClick && onBreadcrumbClick("pulau", "Indonesia", -1)}
-          className={`flex items-center gap-1 text-xs font-semibold transition-colors ${level === "pulau" || level === "indonesia" ? "text-primary" : "hover:text-primary text-muted-foreground"}`}
+          className={`flex items-center gap-1 text-xs font-semibold transition-colors ${level === "pulau" || level === "indonesia" ? "text-logo-primary" : "hover:text-logo-primary text-muted-foreground"}`}
         >
           <Home className="w-3 h-3" /> Indonesia
         </button>
@@ -223,7 +223,7 @@ export default function InteractiveMap({ level, layerType, onClickRegion, breadc
           breadcrumbs.map((crumb, index) => (
             <div key={`${crumb.code}-${index}`} className="flex items-center gap-2">
               <ChevronRight className="w-3 h-3 text-muted-foreground/50" />
-              <button onClick={() => onBreadcrumbClick && onBreadcrumbClick(crumb.code, crumb.name, index)} className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors">
+              <button onClick={() => onBreadcrumbClick && onBreadcrumbClick(crumb.code, crumb.name, index)} className="text-xs font-medium text-muted-foreground hover:text-logo-primary transition-colors">
                 {crumb.name}
               </button>
             </div>
@@ -233,7 +233,7 @@ export default function InteractiveMap({ level, layerType, onClickRegion, breadc
         {level !== "pulau" && level !== "indonesia" && currentRegionName && (
           <div className="flex items-center gap-2">
             <ChevronRight className="w-3 h-3 text-muted-foreground/50" />
-            <span className="text-xs font-bold text-primary">{currentRegionName}</span>
+            <span className="text-xs font-bold text-logo-primary">{currentRegionName}</span>
           </div>
         )}
       </div>

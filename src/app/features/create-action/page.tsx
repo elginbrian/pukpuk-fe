@@ -63,7 +63,7 @@ export default function Action() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Form */}
         <div className="lg:col-span-2">
-          <Card className="glass-panel">
+          <Card className="">
             <CardHeader>
               <CardTitle>Action Details</CardTitle>
               <CardDescription>Fill in the details for your custom action</CardDescription>
@@ -174,7 +174,7 @@ export default function Action() {
         {/* Sidebar Info */}
         <div className="space-y-6">
           {/* Guidelines Card */}
-          <Card className="glass-panel border-l-4 border-l-primary">
+          <Card className="border-l-4 border-l-tersier">
             <CardHeader>
               <CardTitle className="text-lg">Action Guidelines</CardTitle>
             </CardHeader>
@@ -193,7 +193,7 @@ export default function Action() {
                 <ul className="list-disc list-inside space-y-1 text-muted-foreground">
                   <li><span className="text-danger">Critical:</span> Stockout risk</li>
                   <li><span className="text-warning">High:</span> Dead stock</li>
-                  <li><span className="text-primary">Medium:</span> Optimization</li>
+                  <li><span className="text-tersier">Medium:</span> Optimization</li>
                   <li><span className="text-muted-foreground">Low:</span> Routine</li>
                 </ul>
               </div>
@@ -201,7 +201,7 @@ export default function Action() {
           </Card>
 
           {/* Quick Stats Card */}
-          <Card className="glass-panel">
+          <Card className="">
             <CardHeader>
               <CardTitle className="text-lg">Current Status</CardTitle>
             </CardHeader>
@@ -216,7 +216,7 @@ export default function Action() {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">Completed Today</span>
-                <span className="text-lg font-bold text-primary">7</span>
+                <span className="text-lg font-bold text-tersier">7</span>
               </div>
             </CardContent>
           </Card>

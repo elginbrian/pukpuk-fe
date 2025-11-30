@@ -60,7 +60,7 @@ export function NotificationDropdown({ alerts, onAlertClick }: NotificationDropd
       >
         <Bell className="h-5 w-5" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-destructive text-white text-xs flex items-center justify-center font-medium">
+          <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-destructive text-destructive-foreground text-xs flex items-center justify-center font-medium">
             {unreadCount}
           </span>
         )}
@@ -135,7 +135,7 @@ export function NotificationDropdown({ alerts, onAlertClick }: NotificationDropd
                         </StatusBadge>
                       </div>
                       <p className="text-xs text-muted-foreground">{alert.message}</p>
-                      <p className="text-xs text-primary font-medium">{alert.action}</p>
+                      <p className="text-xs text-tersier font-medium">{alert.action}</p>
                     </div>
                   </div>
                 ))}

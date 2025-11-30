@@ -154,7 +154,7 @@ export default function Inventory() {
             <CardTitle className="text-sm font-medium text-muted-foreground">Utilization</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-primary">62%</p>
+            <p className="text-3xl font-bold text-tersier">62%</p>
             <p className="text-xs text-muted-foreground mt-1">Overall capacity</p>
           </CardContent>
         </Card>
@@ -180,7 +180,7 @@ export default function Inventory() {
                   <span className="text-xs md:text-md font-medium">{alert.location}</span>
                 </div>
                 <p className="text-xs md:text-sm text-muted-foreground">{alert.message}</p>
-                <p className="text-sm text-primary font-medium">{alert.action}</p>
+                <p className="text-sm text-tersier font-medium">{alert.action}</p>
               </div>
               <Button variant="ghost" size="sm" onClick={() => setSelectedAlert(index)}>
                 <ArrowRight className="h-4 w-4" />
@@ -207,9 +207,9 @@ export default function Inventory() {
                     <div className="flex items-start justify-between">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          {item.type === "plant" && <Package className="h-4 w-4 text-primary" />}
+                          {item.type === "plant" && <Package className="h-4 w-4 text-tersier"/>}
                           {item.type === "warehouse" && <Warehouse className="h-4 w-4 text-secondary" />}
-                          {item.type === "kios" && <Package className="h-4 w-4 text-accent" />}
+                          {item.type === "kios" && <Package className="h-4 w-4 text-tersier"/>}
                           <span className="font-medium">{item.location}</span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -263,9 +263,9 @@ export default function Inventory() {
                     <TableRow key={index}>
                       <TableCell className="font-medium">
                         <div className="flex items-center gap-2">
-                          {item.type === "plant" && <Package className="h-4 w-4 text-primary" />}
+                          {item.type === "plant" && <Package className="h-4 w-4 text-tersier" />}
                           {item.type === "warehouse" && <Warehouse className="h-4 w-4 text-secondary" />}
-                          {item.type === "kios" && <Package className="h-4 w-4 text-accent" />}
+                          {item.type === "kios" && <Package className="h-4 w-4 text-tersier" />}
                           {item.location}
                         </div>
                       </TableCell>
@@ -280,7 +280,7 @@ export default function Inventory() {
                         </div>
                       </TableCell>
                       <TableCell>{item.capacity} tons</TableCell>
-                      <TableCell>
+                      <TableCell> 
                         <StatusBadge status={item.status} showPulse={item.status === "Dead-Stock" || item.status === "Danger"}>
                           {item.status === "Dead-Stock" ? "Dead Stock" : item.status}
 

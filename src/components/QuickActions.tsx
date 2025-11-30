@@ -17,7 +17,7 @@ export function QuickActions({ onActionClick }: QuickActionsProps) {
   ];
 
   return (
-    <Card className="lg:col-span-1 glass-panel">
+    <Card className="lg:col-span-1">
       <CardHeader>
         <CardTitle className="text-lg">Quick Actions</CardTitle>
         <CardDescription className="text-xs md:text-sm">Jump to key insights</CardDescription>

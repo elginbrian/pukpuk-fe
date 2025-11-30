@@ -30,7 +30,7 @@ export function MapOverlay({ viewMode, regionName, selectedLayer }: MapOverlayPr
         <CardContent className="px-4 py-3 space-y-2 text-sm">
           <div className="flex justify-between items-center">
             <span className="text-muted-foreground font-medium">Region</span>
-            <span className="font-black text-foreground truncate max-w-[140px] uppercase">{regionName}</span>
+            <span className="font-black text-xs text-foreground truncate max-w-[140px] uppercase">{regionName}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-muted-foreground font-medium">Layer</span>

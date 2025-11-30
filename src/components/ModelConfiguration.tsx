@@ -75,7 +75,7 @@ export function ModelConfiguration({ onRunForecast, loading = false }: ModelConf
   };
 
   return (
-    <Card className="glass-panel">
+    <Card>
       <CardHeader>
         <CardTitle className="text-lg">Model Configuration</CardTitle>
         <p className="text-xs text-muted-foreground">Forecast runs automatically when parameters change</p>

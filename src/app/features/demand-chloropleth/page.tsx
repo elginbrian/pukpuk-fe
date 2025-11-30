@@ -94,7 +94,7 @@ export default function Heatmap() {
         <div>
           <h1 className="text-2xl md:text-3xl font-bold mb-1">Multi-Scale Demand Heatmap</h1>
           <p className="text-sm md:text-base text-muted-foreground">
-            Monitoring Area: <span className="font-semibold text-primary">{regionName}</span>
+            Monitoring Area: <span className="font-semibold text-logo-primary">{regionName}</span>
           </p>
         </div>
       </div>
