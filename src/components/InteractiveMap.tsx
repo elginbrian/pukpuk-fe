@@ -76,7 +76,7 @@ export default function InteractiveMap({ level, layerType, onClickRegion, breadc
 
     fetchPromise
       .then((data) => {
-        let finalData = data;
+        const finalData = data;
 
         setTimeout(() => {
           setGeoData(finalData);
